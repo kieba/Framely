@@ -1,0 +1,22 @@
+[
+{
+  "modid": "Framely",
+  "name": "Framely",
+  "description": "Frames!!!!! YEAHHHH!",
+  "version": "1.0",
+  "mcversion": "1.7.10",
+  "url": "",
+  "updateUrl": "",
+  "authorList": [
+    "kieba4",
+    "Rictas"
+  ],
+  "credits": "kieba4 and Rictas",
+  "logoFile": "",
+  "screenshots": [
+  ],
+  "parent":"",
+  "dependencies": [
+  ]
+}
+]
