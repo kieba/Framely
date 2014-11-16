@@ -3,8 +3,8 @@
   "modid": "Framely",
   "name": "Framely",
   "description": "Frames!!!!! YEAHHHH!",
-  "version": "1.0",
-  "mcversion": "1.7.10",
+  "version": "${mod_version}",
+  "mcversion": "${minecraft_version}",
   "url": "",
   "updateUrl": "",
   "authorList": [

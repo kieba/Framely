@@ -10,18 +10,7 @@ import org.apache.logging.log4j.Level;
 
 public class LogHelper {
 
-
     public static void log(Level level, String msg) {
-        if(Framely.DEBUG) {
-            Side side = FMLCommonHandler.instance().getEffectiveSide();
-            if (side == Side.SERVER) {
-                msg = "[SERVER] " + msg;
-            } else if (side == Side.CLIENT) {
-                msg = "[CLIENT] " + msg;
-            } else {
-                msg = "[UNKNOWN] " + msg;
-            }
-        }
         FMLLog.log(Reference.MOD_NAME, level, msg);
     }
 

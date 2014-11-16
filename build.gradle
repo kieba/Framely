@@ -15,16 +15,31 @@ buildscript {
     }
 }
 
+apply plugin: 'java'
 apply plugin: 'forge'
+apply plugin: 'maven'
 
-version = "1.7.10-1.0"
-group= "rk.rk.framely" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+ext.configFile = file "build.properties"
+
+configFile.withReader {
+    def prop = new Properties()
+    prop.load(it)
+    project.ext.config = new ConfigSlurper().parse prop
+}
+
+version = config.mod_version
+group= "com.rk.framely" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "Framely"
 
 minecraft {
-    version = "1.7.10-10.13.2.1236"
+    version = config.minecraft_version + "-" + config.forge_version
     runDir = "eclipse"
+
+    replaceIn "reference/Reference.java"
+    replace "@VERSION@", "${config.mod_version}.${System.getenv("BUILD_NUMBER") ?: 0}"
 }
+
+version = "${config.minecraft_version}-${config.mod_version}.${System.getenv("BUILD_NUMBER") ?: 0}"
 
 dependencies {
     // you may put jars on which you depend on in ./libs
@@ -44,20 +59,19 @@ dependencies {
 
 processResources
 {
-    // this will ensure that this task is redone when the versions change.
-    inputs.property "version", project.version
-    inputs.property "mcversion", project.minecraft.version
+    // exclude xcf files, as they are for development only
+    exclude '**/*.xcf'
 
     // replace stuff in mcmod.info, nothing else
     from(sourceSets.main.resources.srcDirs) {
-        include 'mcmod.info'
-                
+        include '*.info'
+
         // replace version and mcversion
-        expand 'version':project.version, 'mcversion':project.minecraft.version
+        expand 'mod_version': project.version, 'minecraft_version': project.config.minecraft_version
     }
-        
+
     // copy everything else, thats not the mcmod.info
     from(sourceSets.main.resources.srcDirs) {
-        exclude 'mcmod.info'
+        exclude '**/*.info'
     }
 }

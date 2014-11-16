@@ -1,6 +1,8 @@
 package com.rk.framely;
 
+import com.rk.framely.block.BlockFrame;
 import com.rk.framely.handler.ConfigurationHandler;
+import com.rk.framely.init.ModBlocks;
 import com.rk.framely.proxy.IProxy;
 import com.rk.framely.reference.Reference;
 import com.rk.framely.util.LogHelper;
@@ -10,6 +12,7 @@ import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.registry.GameRegistry;
 
 import java.io.IOException;
 
@@ -28,6 +31,8 @@ public class Framely {
     public void preInit(FMLPreInitializationEvent event) {
         ConfigurationHandler.init(event.getSuggestedConfigurationFile());
         FMLCommonHandler.instance().bus().register(new ConfigurationHandler());
+
+        ModBlocks.init();
     }
 
     @Mod.EventHandler
