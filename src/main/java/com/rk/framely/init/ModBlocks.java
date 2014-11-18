@@ -1,5 +1,6 @@
 package com.rk.framely.init;
 
+import com.rk.framely.block.BlockEngine;
 import com.rk.framely.block.BlockFrame;
 import com.rk.framely.reference.Reference;
 import cpw.mods.fml.common.registry.GameRegistry;
@@ -8,8 +9,10 @@ import cpw.mods.fml.common.registry.GameRegistry;
 public class ModBlocks {
 
     public static final BlockFrame frame = new BlockFrame();
+    public static final BlockEngine engine = new BlockEngine();
 
     public static void init() {
-        GameRegistry.registerBlock(frame, "frame");
+        GameRegistry.registerBlock(frame, Reference.BLOCK_FRAME_NAME);
+        GameRegistry.registerBlock(engine, Reference.BLOCK_ENGINE_NAME);
     }
 }

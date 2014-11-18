@@ -41,7 +41,19 @@ minecraft {
 
 version = "${config.minecraft_version}-${config.mod_version}.${System.getenv("BUILD_NUMBER") ?: 0}"
 
+repositories {
+    maven {
+        name 'CB Maven FS'
+        url "http://chickenbones.net/maven/"
+    }
+}
+
 dependencies {
+    compile "codechicken:CodeChickenLib:1.7.10-" + config.ccl_version + ":dev"
+    compile "codechicken:ForgeMultipart:1.7.10-" + config.fmp_version + ":dev"
+    //compile "codechicken:CodeChickenCore:" + config.mc_version + "-" + config.ccc_version + ":dev"
+    //compile "codechicken:NotEnoughItems:" + config.mc_version + "-" + config.nei_version + ":dev"
+    // compile name: 'MineTweaker3', version: config.minetweaker_version, ext: 'jar'
     // you may put jars on which you depend on in ./libs
     // or you may define them like so..
     //compile "some.group:artifact:version:classifier"

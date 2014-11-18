@@ -1,6 +1,7 @@
 package com.rk.framely.block;
 
 import com.rk.framely.reference.Reference;
+import com.rk.framely.util.CreativeTabFramely;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
@@ -12,6 +13,7 @@ public class BlockBase extends Block {
 
     public BlockBase(Material m) {
         super(m);
+        this.setCreativeTab(CreativeTabFramely.FRAMELY_TAB);
     }
 
     @Override
@@ -22,7 +24,7 @@ public class BlockBase extends Block {
     @Override
     @SideOnly(Side.CLIENT)
     public void registerBlockIcons(IIconRegister iconRegister) {
-        blockIcon = iconRegister.registerIcon(String.format("%s", getUnwrappedUnlocalizedName(this.getUnlocalizedName())));
+        blockIcon = iconRegister.registerIcon(getUnwrappedUnlocalizedName(this.getUnlocalizedName()));
     }
 
     protected String getUnwrappedUnlocalizedName(String unlocalizedName) {
