@@ -1,12 +1,11 @@
 package com.rk.framely.block;
 
+import com.rk.framely.Framely;
+import com.rk.framely.proxy.CommonProxy;
 import com.rk.framely.reference.Reference;
 import com.rk.framely.tileentity.TileEntityEngine;
-import com.rk.framely.util.BlockHelper;
-import com.rk.framely.util.LogHelper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.block.BlockFurnace;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -19,19 +18,16 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
-import scala.math.Ordering;
-
-import javax.swing.*;
 
 public class BlockEngine extends BlockBase implements ITileEntityProvider {
 
-    private static int[][] icon_rotation = new int[][] {
+    private final static int[][] ICON_ROTATION = new int[][] {
             {5,4,0,0,0,0}, //DOWN
             {4,5,1,1,1,1}, //UP
             {1,1,5,4,3,2}, //NORTH
             {0,0,4,5,2,3}, //SOUTH
             {3,3,2,3,5,4}, //WEST
-            {2,2,3,2,4,5} //EAST
+            {2,2,3,2,4,5}  //EAST
     };
 
     /**
@@ -51,7 +47,7 @@ public class BlockEngine extends BlockBase implements ITileEntityProvider {
     }
 
     @Override
-    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int p_149727_6_, float p_149727_7_, float p_149727_8_, float p_149727_9_) {
+    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int faceHit, float p_149727_7_, float p_149727_8_, float p_149727_9_) {
         if (world.isRemote) {
             return true;
         } else {
@@ -114,8 +110,20 @@ public class BlockEngine extends BlockBase implements ITileEntityProvider {
     public IIcon getIcon(IBlockAccess blockAccess, int x, int y, int z, int side) {
         TileEntity tileEntity = blockAccess.getTileEntity(x, y, z);
         if(tileEntity instanceof TileEntityEngine) {
-            return icons[icon_rotation[((TileEntityEngine)tileEntity).getDir().ordinal()][side]];
+            return icons[ICON_ROTATION[((TileEntityEngine)tileEntity).getDir().ordinal()][side]];
         }
         return icons[side];
     }
+
+    /*
+    @Override
+    public boolean renderAsNormalBlock() {
+        return false;
+    }
+
+    @Override
+    public int getRenderType() {
+        return CommonProxy.framelyRenderId;
+    }
+    */
 }
