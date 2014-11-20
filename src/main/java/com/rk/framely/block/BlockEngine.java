@@ -43,7 +43,6 @@ public class BlockEngine extends BlockBase implements ITileEntityProvider {
     public BlockEngine() {
         super(Material.iron);
         this.setBlockName(Reference.BLOCK_ENGINE_NAME);
-        this.setBlockTextureName(Reference.BLOCK_ENGINE_NAME);
     }
 
     @Override

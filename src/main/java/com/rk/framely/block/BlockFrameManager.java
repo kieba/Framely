@@ -3,10 +3,10 @@ package com.rk.framely.block;
 import com.rk.framely.reference.Reference;
 import net.minecraft.block.material.Material;
 
-public class BlockFrame extends BlockBase {
+public class BlockFrameManager extends BlockBase {
 
-    public BlockFrame() {
+    public BlockFrameManager(){
         super(Material.iron);
-        this.setBlockName(Reference.BLOCK_FRAME_NAME);
+        this.setBlockName(Reference.BLOCK_FRAME_MANAGER_NAME);
     }
 }

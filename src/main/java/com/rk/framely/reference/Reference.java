@@ -11,4 +11,5 @@ public class Reference {
 
     public static final String BLOCK_FRAME_NAME = "frame";
     public static final String BLOCK_ENGINE_NAME = "engine";
+    public static final String BLOCK_FRAME_MANAGER_NAME = "frameManager";
 }

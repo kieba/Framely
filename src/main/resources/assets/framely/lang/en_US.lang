@@ -1,2 +1,3 @@
 tile.framely:frame.name=Frame
 tile.framely:engine.name=Engine
+tile.framely:frameManager.name=Frame Manager
