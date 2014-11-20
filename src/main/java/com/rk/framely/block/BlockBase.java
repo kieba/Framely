@@ -9,7 +9,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.item.ItemStack;
 
-public class BlockBase extends Block {
+public abstract class BlockBase extends Block {
 
     public BlockBase(Material m) {
         super(m);

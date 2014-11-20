@@ -9,7 +9,7 @@ import net.minecraft.network.Packet;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class TileEntityEngine extends TileEntity {
+public class TileEntityEngine extends TileEntityFrameBase {
 
     private ForgeDirection dir = ForgeDirection.NORTH;
 
@@ -34,7 +34,15 @@ public class TileEntityEngine extends TileEntity {
     }
 
     public void onBlockActivated() {
-        ConstructionHelper.moveConstruction(worldObj, new Pos(xCoord, yCoord, zCoord), dir);
+        //ConstructionHelper.moveConstruction(worldObj, new Pos(xCoord, yCoord, zCoord), dir);
+        if(relativeFrameManagerPos==null) return;
+        TileEntity entity = worldObj.getTileEntity(relativeFrameManagerPos.x + xCoord, relativeFrameManagerPos.y + yCoord, relativeFrameManagerPos.z + zCoord);
+
+        if(entity instanceof TileEntityFrameManager){
+            TileEntityFrameManager frameManager = (TileEntityFrameManager)entity;
+            frameManager.moveConstruction(dir);
+        }
+
     }
 
     @Override

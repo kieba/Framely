@@ -14,6 +14,10 @@ public class Pos {
         this.z = z;
     }
 
+    public Pos clone(){
+        return new Pos(x,y,z);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

@@ -19,7 +19,7 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class BlockEngine extends BlockBase implements ITileEntityProvider {
+public class BlockEngine extends BlockFrameBase implements ITileEntityProvider {
 
     private final static int[][] ICON_ROTATION = new int[][] {
             {5,4,0,0,0,0}, //DOWN
