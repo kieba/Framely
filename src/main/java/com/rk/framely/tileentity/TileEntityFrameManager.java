@@ -4,11 +4,15 @@ import codechicken.multipart.MultipartHelper;
 import codechicken.multipart.TileMultipart;
 import com.rk.framely.Framely;
 import com.rk.framely.block.BlockFrameBase;
+import com.rk.framely.network.MessageEngine;
+import com.rk.framely.network.MessageFrameManager;
+import com.rk.framely.network.PacketHandler;
 import com.rk.framely.util.LogHelper;
 import com.rk.framely.util.Pos;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.Packet;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
@@ -33,6 +37,7 @@ public class TileEntityFrameManager extends TileEntityFrameBase{
                     base.removeFrameManager();
                 }
             }
+            worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
         }
     }
 
@@ -52,6 +57,7 @@ public class TileEntityFrameManager extends TileEntityFrameBase{
             tmpPos.get(i).z -= zCoord;
         }
         relativeConstruction = tmpPos;
+        worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 
     }
 
@@ -264,6 +270,11 @@ public class TileEntityFrameManager extends TileEntityFrameBase{
             }
             tag.setIntArray("relativeConstruction", tmp);
         }
+    }
+
+    @Override
+    public Packet getDescriptionPacket() {
+        return PacketHandler.INSTANCE.getPacketFrom(new MessageFrameManager(this));
     }
 
 }

@@ -1,6 +1,7 @@
 package com.rk.framely.block;
 
 import com.rk.framely.Framely;
+import com.rk.framely.proxy.ClientProxy;
 import com.rk.framely.proxy.CommonProxy;
 import com.rk.framely.reference.Reference;
 import com.rk.framely.tileentity.TileEntityEngine;
@@ -114,15 +115,4 @@ public class BlockEngine extends BlockFrameBase implements ITileEntityProvider {
         return icons[side];
     }
 
-    /*
-    @Override
-    public boolean renderAsNormalBlock() {
-        return false;
-    }
-
-    @Override
-    public int getRenderType() {
-        return CommonProxy.framelyRenderId;
-    }
-    */
 }

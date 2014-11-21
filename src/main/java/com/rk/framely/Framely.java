@@ -39,7 +39,9 @@ public class Framely {
 
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) {
+
         ModTileEntities.init();
+        PROXY.init();
     }
 
     @Mod.EventHandler

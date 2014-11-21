@@ -1,5 +1,6 @@
 package com.rk.framely.block;
 
+import com.rk.framely.proxy.ClientProxy;
 import com.rk.framely.reference.Reference;
 import com.rk.framely.tileentity.TileEntityEngine;
 import com.rk.framely.tileentity.TileEntityFrameManager;
@@ -41,5 +42,21 @@ public class BlockFrameManager extends BlockFrameBase implements ITileEntityProv
         if (tile instanceof TileEntityFrameManager) {
             ((TileEntityFrameManager) tile).onBlockRemoved();
         }
+    }
+
+
+    @Override
+    public boolean renderAsNormalBlock() {
+        return false;
+    }
+
+    @Override
+    public int getRenderType() {
+        return ClientProxy.renderIdFrameManager;
+    }
+
+    @Override
+    public boolean isOpaqueCube() {
+        return false;
     }
 }

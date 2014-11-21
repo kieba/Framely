@@ -11,6 +11,7 @@ public class PacketHandler {
 
     public static void init() {
         INSTANCE.registerMessage(MessageEngine.class, MessageEngine.class, 0, Side.CLIENT);
+        INSTANCE.registerMessage(MessageFrameManager.class, MessageFrameManager.class, 1, Side.CLIENT);
     }
 
 }
