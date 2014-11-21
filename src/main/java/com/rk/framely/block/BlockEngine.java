@@ -115,4 +115,8 @@ public class BlockEngine extends BlockFrameBase implements ITileEntityProvider {
         return icons[side];
     }
 
+    @Override
+    public IIcon getIcon(int side, int meta) {
+        return icons[ICON_ROTATION[ForgeDirection.UP.ordinal()][side]];
+    }
 }
