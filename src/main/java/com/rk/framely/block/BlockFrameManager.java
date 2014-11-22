@@ -8,6 +8,8 @@ import com.rk.framely.tileentity.TileEntityFrameManager;
 import com.rk.framely.util.LogHelper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -15,10 +17,13 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
+import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
 public class BlockFrameManager extends BlockFrameBase implements ITileEntityProvider {
+
+    public static IIcon blockMovement;
 
     private IIcon[] icons = new IIcon[2];
 
@@ -55,6 +60,16 @@ public class BlockFrameManager extends BlockFrameBase implements ITileEntityProv
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
+    public void registerBlockIcons(IIconRegister iconRegister) {
+        super.registerBlockIcons(iconRegister);
+        String name = getUnwrappedUnlocalizedName(this.getUnlocalizedName());
+        blockMovement = iconRegister.registerIcon(name + "_blockMovement");
+        icons[0] = iconRegister.registerIcon(name + "_unbound");
+        icons[1] = iconRegister.registerIcon(name + "_bound");
+    }
+
+    @Override
     public boolean canPlaceBlockAt(World world, int x, int y, int z) {
         for(ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
             TileEntity entity = world.getTileEntity(x + dir.offsetX, y + dir.offsetY, z + dir.offsetZ);
@@ -80,14 +95,6 @@ public class BlockFrameManager extends BlockFrameBase implements ITileEntityProv
     @Override
     public boolean isOpaqueCube() {
         return false;
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public void registerBlockIcons(IIconRegister iconRegister) {
-        String name = getUnwrappedUnlocalizedName(this.getUnlocalizedName());
-        icons[0] = iconRegister.registerIcon(name + "_unbound");
-        icons[1] = iconRegister.registerIcon(name + "_bound");
     }
 
     @Override
