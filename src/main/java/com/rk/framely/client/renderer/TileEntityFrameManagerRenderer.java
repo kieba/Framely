@@ -17,9 +17,21 @@ public class TileEntityFrameManagerRenderer extends TileEntitySpecialRenderer {
         if(tileEntity instanceof TileEntityFrameManager) {
             TileEntityFrameManager tile = (TileEntityFrameManager) tileEntity;
 
-            List<Pos> tmp = tile.relativeConstruction;
-            //LogHelper.info(tmp == null ? " null" : tmp.size() + "");
-            if(tmp != null) ConstructionRenderer.renderConstruction(tmp, x, y, z);
+            if(tile.move) {
+                float progress = tile.tick / (float)TileEntityFrameManager.ANIMATION_TICKS;
+
+                float offsetX = tile.direction.offsetX * progress;
+                float offsetY = tile.direction.offsetY * progress;
+                float offsetZ = tile.direction.offsetZ * progress;
+
+                List<Pos> tmp = tile.relativeConstruction;
+                if(tmp != null) ConstructionRenderer.renderConstruction(tmp, x + offsetX, y + offsetY, z + offsetZ);
+            } else {
+                List<Pos> tmp = tile.relativeConstruction;
+                if(tmp != null) ConstructionRenderer.renderConstruction(tmp, x, y, z);
+            }
+
+
         }
 
     }

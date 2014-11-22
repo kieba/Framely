@@ -21,8 +21,28 @@ import net.minecraftforge.common.util.ForgeDirection;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TileEntityFrameManager extends TileEntityFrameBase{
+public class TileEntityFrameManager extends TileEntityFrameBase {
+
+    public static int ANIMATION_TICKS = 20;
+    public ForgeDirection direction;
+    public int tick = 0;
+    public boolean move = false;
+    public boolean sendAnimationStartMessage = false;
+
     public List<Pos> relativeConstruction;
+
+    @Override
+    public void updateEntity() {
+        if(move) {
+            tick++;
+            if(tick >= ANIMATION_TICKS) {
+                tick = 0;
+                move = false;
+                /* move the relativeConstruction (server side only) */
+                if(!worldObj.isRemote) move(direction);
+            }
+        }
+    }
 
     public void onBlockActivated() {
         onConstructionChanged();
@@ -76,15 +96,22 @@ public class TileEntityFrameManager extends TileEntityFrameBase{
      * @return true if the relativeConstruction is could be moved
      */
     public boolean moveConstruction(ForgeDirection dir) {
-        /* check if relativeConstruction is movable */
-        if(!isMovable(dir)) {
-            return false;
+        if(!worldObj.isRemote) { //server side only
+            this.direction = dir;
+            this.move = true;
+
+            /* check if relativeConstruction is movable */
+            if(!isMovable(dir)) {
+                this.move = false;
+                return false;
+            }
+
+            sendAnimationStartMessage = true;
+            worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+
+            return true;
         }
-
-        /* move the relativeConstruction */
-        move(dir);
-
-        return true;
+        return false;
     }
 
     private void visitBlock(List<Pos> construction, int x, int y, int z) {

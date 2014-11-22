@@ -17,8 +17,16 @@ import java.util.List;
 
 public class MessageFrameManager implements IMessage, IMessageHandler<MessageFrameManager, IMessage> {
 
+    private enum Type {
+        UPDATE,
+        START_ANIMATION;
+    }
+
+    private Type type;
+
     private int x, y,z;
     private List<Pos> construction = new ArrayList<Pos>();
+    private int direction;
 
     public MessageFrameManager() {}
 
@@ -26,8 +34,15 @@ public class MessageFrameManager implements IMessage, IMessageHandler<MessageFra
         x = tile.xCoord;
         y = tile.yCoord;
         z = tile.zCoord;
-        if(tile.relativeConstruction != null) {
-            construction = tile.relativeConstruction;
+        if(tile.sendAnimationStartMessage) {
+            type = Type.START_ANIMATION;
+            tile.sendAnimationStartMessage = false;
+            direction = tile.direction.ordinal();
+        } else {
+            type = Type.UPDATE;
+            if(tile.relativeConstruction != null) {
+                construction = tile.relativeConstruction;
+            }
         }
     }
 
@@ -36,10 +51,18 @@ public class MessageFrameManager implements IMessage, IMessageHandler<MessageFra
         this.x = buf.readInt();
         this.y = buf.readInt();
         this.z = buf.readInt();
-        int size = buf.readInt();
-        for (int i = 0; i < size; i++) {
-            construction.add(new Pos(buf.readInt(), buf.readInt(), buf.readInt()));
+        type = Type.values()[buf.readInt()];
+        if(type == Type.UPDATE) {
+            int size = buf.readInt();
+            for (int i = 0; i < size; i++) {
+                construction.add(new Pos(buf.readInt(), buf.readInt(), buf.readInt()));
+            }
+        } else if(type == Type.START_ANIMATION) {
+            direction = buf.readInt();
+        } else {
+            //error
         }
+
     }
 
     @Override
@@ -47,12 +70,17 @@ public class MessageFrameManager implements IMessage, IMessageHandler<MessageFra
         buf.writeInt(x);
         buf.writeInt(y);
         buf.writeInt(z);
-        buf.writeInt(construction.size());
-        for (int i = 0; i < construction.size(); i++) {
-            Pos p = construction.get(i);
-            buf.writeInt(p.x);
-            buf.writeInt(p.y);
-            buf.writeInt(p.z);
+        buf.writeInt(type.ordinal());
+        if(type == Type.UPDATE) {
+            buf.writeInt(construction.size());
+            for (int i = 0; i < construction.size(); i++) {
+                Pos p = construction.get(i);
+                buf.writeInt(p.x);
+                buf.writeInt(p.y);
+                buf.writeInt(p.z);
+            }
+        } else if(type == Type.START_ANIMATION) {
+            buf.writeInt(direction);
         }
     }
 
@@ -60,7 +88,14 @@ public class MessageFrameManager implements IMessage, IMessageHandler<MessageFra
     public IMessage onMessage(MessageFrameManager message, MessageContext ctx) {
         TileEntity tileEntity = FMLClientHandler.instance().getClient().theWorld.getTileEntity(message.x, message.y, message.z);
         if (tileEntity instanceof TileEntityFrameManager) {
-            ((TileEntityFrameManager) tileEntity).relativeConstruction = message.construction;
+            TileEntityFrameManager tileEntityFrameManager = ((TileEntityFrameManager) tileEntity);
+            if(message.type == Type.UPDATE) {
+                tileEntityFrameManager.relativeConstruction = message.construction;
+            } else if(message.type == Type.START_ANIMATION) {
+                tileEntityFrameManager.direction = ForgeDirection.values()[message.direction];
+                tileEntityFrameManager.move = true;
+            }
+
             //NAME UPDATE
             FMLClientHandler.instance().getClient().theWorld.func_147451_t(message.x, message.y, message.z);
         }
