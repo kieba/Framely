@@ -29,7 +29,7 @@ public class TileEntityFrameManager extends TileEntityFrameBase {
     public boolean move = false;
     public boolean sendAnimationStartMessage = false;
 
-    public List<Pos> relativeConstruction;
+    public List<Pos> relativeConstruction = new ArrayList<Pos>();
 
     @Override
     public void updateEntity() {
@@ -48,8 +48,13 @@ public class TileEntityFrameManager extends TileEntityFrameBase {
         onConstructionChanged();
     }
 
-    public void onBlockRemoved(){
-        if(relativeConstruction!=null) {
+    private boolean isOwnFrameManager(){
+        if(relativeFrameManagerPos == null) return true;
+        return relativeFrameManagerPos.equals(new Pos(0,0,0));
+    }
+
+    private void unRegisterFrameManager(){
+        if(!relativeConstruction.isEmpty()) {
             for (int i = 0; i < relativeConstruction.size(); i++) {
                 TileEntity entity = worldObj.getTileEntity(relativeConstruction.get(i).x + xCoord, relativeConstruction.get(i).y + yCoord, relativeConstruction.get(i).z + zCoord);
                 if (entity instanceof TileEntityFrameBase) {
@@ -57,11 +62,19 @@ public class TileEntityFrameManager extends TileEntityFrameBase {
                     base.removeFrameManager();
                 }
             }
+            relativeConstruction.clear();
             worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
         }
     }
 
+    public void onBlockRemovedFromConstruction(){
+        unRegisterFrameManager();
+    }
+
     public void onConstructionChanged(){
+        if(!isOwnFrameManager()) return;
+        unRegisterFrameManager();
+
         List<Pos> tmpPos = new ArrayList<Pos>();
         visitBlock(tmpPos, xCoord, yCoord, zCoord);
 
@@ -288,7 +301,7 @@ public class TileEntityFrameManager extends TileEntityFrameBase {
     @Override
     public void writeToNBT(NBTTagCompound tag) {
         super.writeToNBT(tag);
-        if(relativeConstruction != null){
+        if(!relativeConstruction.isEmpty()){
             int[] tmp = new int[relativeConstruction.size()*3];
             for(int i = 0; i< relativeConstruction.size();i++){
                 tmp[i*3] = relativeConstruction.get(i).x;

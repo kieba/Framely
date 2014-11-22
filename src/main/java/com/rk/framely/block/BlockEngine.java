@@ -71,13 +71,13 @@ public class BlockEngine extends BlockFrameBase implements ITileEntityProvider {
             int facing = MathHelper.floor_double(entityLiving.rotationYaw * 4.0F / 360.0F + 0.5D) & 3;
 
             if (facing == 0) {
-                direction = ForgeDirection.NORTH;
-            } else if (facing == 1) {
-                direction = ForgeDirection.EAST;
-            } else if (facing == 2) {
                 direction = ForgeDirection.SOUTH;
-            } else if (facing == 3) {
+            } else if (facing == 1) {
                 direction = ForgeDirection.WEST;
+            } else if (facing == 2) {
+                direction = ForgeDirection.NORTH;
+            } else if (facing == 3) {
+                direction = ForgeDirection.EAST;
             }
 
             if (entityLiving.rotationPitch > 60.0f) {

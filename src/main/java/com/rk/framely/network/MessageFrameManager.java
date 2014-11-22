@@ -91,6 +91,7 @@ public class MessageFrameManager implements IMessage, IMessageHandler<MessageFra
             TileEntityFrameManager tileEntityFrameManager = ((TileEntityFrameManager) tileEntity);
             if(message.type == Type.UPDATE) {
                 tileEntityFrameManager.relativeConstruction = message.construction;
+                FMLClientHandler.instance().getClient().theWorld.markBlockForUpdate(message.x, message.y, message.z);
             } else if(message.type == Type.START_ANIMATION) {
                 tileEntityFrameManager.direction = ForgeDirection.values()[message.direction];
                 tileEntityFrameManager.move = true;

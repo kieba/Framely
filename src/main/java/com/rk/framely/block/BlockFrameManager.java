@@ -3,14 +3,24 @@ package com.rk.framely.block;
 import com.rk.framely.proxy.ClientProxy;
 import com.rk.framely.reference.Reference;
 import com.rk.framely.tileentity.TileEntityEngine;
+import com.rk.framely.tileentity.TileEntityFrameBase;
 import com.rk.framely.tileentity.TileEntityFrameManager;
+import com.rk.framely.util.LogHelper;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.IIcon;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
 
 public class BlockFrameManager extends BlockFrameBase implements ITileEntityProvider {
+
+    private IIcon[] icons = new IIcon[2];
 
     public BlockFrameManager(){
         super(Material.iron);
@@ -44,6 +54,18 @@ public class BlockFrameManager extends BlockFrameBase implements ITileEntityProv
         }
     }
 
+    @Override
+    public boolean canPlaceBlockAt(World world, int x, int y, int z) {
+        for(ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
+            TileEntity entity = world.getTileEntity(x + dir.offsetX, y + dir.offsetY, z + dir.offsetZ);
+            if(entity instanceof TileEntityFrameBase){
+                if(((TileEntityFrameBase) entity).relativeFrameManagerPos != null){
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
 
     @Override
     public boolean renderAsNormalBlock() {
@@ -59,4 +81,29 @@ public class BlockFrameManager extends BlockFrameBase implements ITileEntityProv
     public boolean isOpaqueCube() {
         return false;
     }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void registerBlockIcons(IIconRegister iconRegister) {
+        String name = getUnwrappedUnlocalizedName(this.getUnlocalizedName());
+        icons[0] = iconRegister.registerIcon(name + "_unbound");
+        icons[1] = iconRegister.registerIcon(name + "_bound");
+    }
+
+    @Override
+    public IIcon getIcon(IBlockAccess blockAccess, int x, int y, int z, int side) {
+        TileEntity tileEntity = blockAccess.getTileEntity(x, y, z);
+        if(tileEntity instanceof TileEntityFrameManager) {
+            TileEntityFrameManager tileManager = (TileEntityFrameManager) tileEntity;
+            if(tileManager.relativeConstruction.isEmpty())
+                return icons[0];
+        }
+        return icons[1];
+    }
+
+    @Override
+    public IIcon getIcon(int side, int meta) {
+        return icons[0];
+    }
+
 }

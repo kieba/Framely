@@ -31,4 +31,17 @@ public class TileEntityFrameBase extends TileEntity {
     public void removeFrameManager(){
         relativeFrameManagerPos = null;
     }
+
+    public TileEntityFrameManager getFrameManager(){
+        if(relativeFrameManagerPos != null)
+            return (TileEntityFrameManager)worldObj.getTileEntity(relativeFrameManagerPos.x + xCoord,relativeFrameManagerPos.y + yCoord,relativeFrameManagerPos.z + zCoord);
+
+        return null;
+    }
+
+    public void onBlockRemoved(){
+        TileEntityFrameManager frameManager = getFrameManager();
+        if(frameManager!= null)
+            frameManager.onBlockRemovedFromConstruction();
+    }
 }
