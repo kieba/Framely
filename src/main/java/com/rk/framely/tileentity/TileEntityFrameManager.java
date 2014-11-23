@@ -14,6 +14,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.Packet;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -42,6 +43,33 @@ public class TileEntityFrameManager extends TileEntityFrameBase {
                 if(!worldObj.isRemote) move(direction);
             }
         }
+    }
+
+    @Override
+    public AxisAlignedBB getRenderBoundingBox() {
+        double minX = 0;
+        double minY = 0;
+        double minZ = 0;
+        double maxX = 0;
+        double maxY = 0;
+        double maxZ = 0;
+        for (Pos p : relativeConstruction) {
+            if(p.x < minX) minX = p.x;
+            if(p.x > maxX) maxX = p.x;
+
+            if(p.y < minY) minY = p.y;
+            if(p.y > maxY) maxY = p.y;
+
+            if(p.z < minZ) minZ = p.z;
+            if(p.z > maxZ) maxZ = p.z;
+        }
+        minX += this.xCoord;
+        minY += this.yCoord;
+        minZ += this.zCoord;
+        maxX += this.xCoord + 1;
+        maxY += this.yCoord + 1;
+        maxZ += this.zCoord + 1;
+        return AxisAlignedBB.getBoundingBox(minX, minY, minZ, maxX, maxY, maxZ);
     }
 
     public void onBlockActivated() {
