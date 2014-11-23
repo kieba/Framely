@@ -35,7 +35,7 @@ public class TileEntityEngine extends TileEntityFrameBase {
 
     public void onBlockActivated() {
         //ConstructionHelper.moveConstruction(worldObj, new Pos(xCoord, yCoord, zCoord), dir);
-        if(relativeFrameManagerPos==null) return;
+        if(relativeFrameManagerPos.equals(Pos.NULL)) return;
         TileEntity entity = worldObj.getTileEntity(relativeFrameManagerPos.x + xCoord, relativeFrameManagerPos.y + yCoord, relativeFrameManagerPos.z + zCoord);
 
         if(entity instanceof TileEntityFrameManager){

@@ -4,6 +4,8 @@ import java.util.zip.ZipEntry;
 
 public class Pos {
 
+    public static final Pos NULL = new Pos(0,0,0);
+
     public int x;
     public int y;
     public int z;

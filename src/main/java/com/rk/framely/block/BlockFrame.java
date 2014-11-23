@@ -1,5 +1,6 @@
 package com.rk.framely.block;
 
+import com.rk.framely.init.ModBlocks;
 import com.rk.framely.reference.Reference;
 import com.rk.framely.tileentity.TileEntityEngine;
 import com.rk.framely.tileentity.TileEntityFrame;
@@ -41,20 +42,22 @@ public class BlockFrame extends BlockFrameBase implements ITileEntityProvider {
             }
         } else {
             ItemStack stack = player.getHeldItem();
-            if(stack == null) return true;
+            if(stack == null) return false;
             Block block = Block.getBlockFromItem(player.getHeldItem().getItem());
 
             //blacklist blocks
-            if(block == Blocks.air) return true;
-            if(!block.isOpaqueCube()) return true;
-            if(block instanceof BlockColored) return true;
+            if(block == Blocks.air) return false;
+            if(!block.isOpaqueCube()) return false;
+            if(block instanceof BlockColored) return false;
+            if(block instanceof BlockFrame) return false;
 
             TileEntity tileEntity = world.getTileEntity(x, y, z);
             if(tileEntity instanceof TileEntityFrame) {
                 ((TileEntityFrame)tileEntity).setSideTexture(side, Block.getIdFromBlock(block), world.getBlockMetadata(x, y, z));
             }
+            return true;
         }
-        return true;
+        return false;
     }
 
     @Override

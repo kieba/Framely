@@ -6,6 +6,7 @@ import com.rk.framely.tileentity.TileEntityEngine;
 import com.rk.framely.tileentity.TileEntityFrameBase;
 import com.rk.framely.tileentity.TileEntityFrameManager;
 import com.rk.framely.util.LogHelper;
+import com.rk.framely.util.Pos;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import cpw.mods.fml.relauncher.Side;
@@ -74,7 +75,7 @@ public class BlockFrameManager extends BlockFrameBase implements ITileEntityProv
         for(ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
             TileEntity entity = world.getTileEntity(x + dir.offsetX, y + dir.offsetY, z + dir.offsetZ);
             if(entity instanceof TileEntityFrameBase){
-                if(((TileEntityFrameBase) entity).relativeFrameManagerPos != null){
+                if(!((TileEntityFrameBase) entity).relativeFrameManagerPos.equals(Pos.NULL)){
                     return false;
                 }
             }
@@ -84,6 +85,11 @@ public class BlockFrameManager extends BlockFrameBase implements ITileEntityProv
 
     @Override
     public boolean renderAsNormalBlock() {
+        return false;
+    }
+
+    @Override
+    public boolean isOpaqueCube() {
         return false;
     }
 

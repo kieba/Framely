@@ -82,8 +82,7 @@ public class TileEntityFrameManager extends TileEntityFrameBase implements IEner
     }
 
     private boolean isOwnFrameManager(){
-        if(relativeFrameManagerPos == null) return true;
-        return relativeFrameManagerPos.equals(new Pos(0,0,0));
+        return relativeFrameManagerPos.equals(Pos.NULL);
     }
 
     private void unRegisterFrameManager(){
@@ -358,9 +357,7 @@ public class TileEntityFrameManager extends TileEntityFrameBase implements IEner
     @Override
     public void readFromNBT(NBTTagCompound tag) {
         super.readFromNBT(tag);
-
         relativeConstruction = new ArrayList<Pos>();
-
         int[] tmp = tag.getIntArray("relativeConstruction");
         for(int i = 0; i<tmp.length;i+=3){
             relativeConstruction.add(new Pos(tmp[i], tmp[i + 1], tmp[i + 2]));
@@ -371,15 +368,13 @@ public class TileEntityFrameManager extends TileEntityFrameBase implements IEner
     @Override
     public void writeToNBT(NBTTagCompound tag) {
         super.writeToNBT(tag);
-        if(!relativeConstruction.isEmpty()){
-            int[] tmp = new int[relativeConstruction.size()*3];
-            for(int i = 0; i< relativeConstruction.size();i++){
-                tmp[i*3] = relativeConstruction.get(i).x;
-                tmp[i*3+1] = relativeConstruction.get(i).y;
-                tmp[i*3+2] = relativeConstruction.get(i).z;
-            }
-            tag.setIntArray("relativeConstruction", tmp);
+        int[] tmp = new int[relativeConstruction.size()*3];
+        for(int i = 0; i< relativeConstruction.size();i++){
+            tmp[i*3] = relativeConstruction.get(i).x;
+            tmp[i*3+1] = relativeConstruction.get(i).y;
+            tmp[i*3+2] = relativeConstruction.get(i).z;
         }
+        tag.setIntArray("relativeConstruction", tmp);
         storage.writeToNBT(tag);
     }
 
