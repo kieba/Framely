@@ -38,7 +38,7 @@ public class TileEntityFrameBase extends TileEntity {
 
     public void onBlockRemoved(){
         TileEntityFrameManager frameManager = getFrameManager();
-        if(frameManager != null)
+        if(frameManager!= null && !frameManager.move)
             frameManager.onBlockRemovedFromConstruction();
     }
 }

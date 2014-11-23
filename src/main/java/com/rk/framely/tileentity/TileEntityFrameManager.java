@@ -6,9 +6,7 @@ import cofh.api.energy.EnergyStorage;
 import cofh.api.energy.IEnergyHandler;
 import com.rk.framely.Framely;
 import com.rk.framely.block.BlockFrameBase;
-import com.rk.framely.network.MessageEngine;
-import com.rk.framely.network.MessageFrameManager;
-import com.rk.framely.network.PacketHandler;
+import com.rk.framely.network.*;
 import com.rk.framely.util.LogHelper;
 import com.rk.framely.util.Pos;
 import net.minecraft.block.Block;
@@ -24,7 +22,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TileEntityFrameManager extends TileEntityFrameBase implements IEnergyHandler {
+public class TileEntityFrameManager extends TileEntityFrameBase implements IPacketReceiver, IEnergyHandler {
 
     private static final int ENERGY_PER_BLOCK = 160;
 
@@ -316,6 +314,21 @@ public class TileEntityFrameManager extends TileEntityFrameBase implements IEner
     @cpw.mods.fml.common.Optional.Method(modid = "ForgeMultipart")
     private boolean isMultipart(TileEntity tile) {
         return tile instanceof TileMultipart;
+    }
+
+    @Override
+    public void ReceiveClientData(com.rk.framely.network.Packet packet) {
+
+    }
+
+    @Override
+    public void ReceiveServerData(com.rk.framely.network.Packet packet) {
+        if(packet instanceof PacketTileSimpleAction){
+            PacketTileSimpleAction ptsa = (PacketTileSimpleAction) packet;
+            if(ptsa.command.equals("buildConstruct")){
+                onConstructionChanged();
+            }
+        }
     }
 
     @Override

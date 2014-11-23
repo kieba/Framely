@@ -12,4 +12,12 @@ public class Reference {
     public static final String BLOCK_FRAME_NAME = "frame";
     public static final String BLOCK_ENGINE_NAME = "engine";
     public static final String BLOCK_FRAME_MANAGER_NAME = "frameManager";
+
+    public static final int GUI_FRAME_MANAGER = 0;
+
+    public static final String NETWORK_CHANNEL_NAME = "FRAME";
+
+    public static final int NETWORK_PACKET_ID_TILE_SIMPLE_ACTION = 0;
+
+
 }
