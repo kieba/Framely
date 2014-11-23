@@ -2,6 +2,8 @@ package com.rk.framely.tileentity;
 
 import codechicken.multipart.MultipartHelper;
 import codechicken.multipart.TileMultipart;
+import cofh.api.energy.EnergyStorage;
+import cofh.api.energy.IEnergyHandler;
 import com.rk.framely.Framely;
 import com.rk.framely.block.BlockFrameBase;
 import com.rk.framely.network.MessageEngine;
@@ -22,13 +24,16 @@ import net.minecraftforge.common.util.ForgeDirection;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TileEntityFrameManager extends TileEntityFrameBase {
+public class TileEntityFrameManager extends TileEntityFrameBase implements IEnergyHandler {
+
+    private static final int ENERGY_PER_BLOCK = 160;
 
     public static int ANIMATION_TICKS = 20;
     public ForgeDirection direction;
     public int tick = 0;
     public boolean move = false;
     public boolean sendAnimationStartMessage = false;
+    private EnergyStorage storage = new EnergyStorage(ENERGY_PER_BLOCK * 1024, 10000, Integer.MAX_VALUE);
 
     public List<Pos> relativeConstruction = new ArrayList<Pos>();
 
@@ -122,6 +127,10 @@ public class TileEntityFrameManager extends TileEntityFrameBase {
 
     }
 
+    public int getEnergyPerMovement() {
+        return ENERGY_PER_BLOCK * relativeConstruction.size();
+    }
+
     private String debugOut(List<Pos> list){
         String tmp = "";
         for(int i = 0; i<list.size();i++){
@@ -147,6 +156,13 @@ public class TileEntityFrameManager extends TileEntityFrameBase {
                 return false;
             }
 
+            int energyNeeded = getEnergyPerMovement();
+            if(storage.getEnergyStored() < energyNeeded) {
+                this.move = false;
+                return false;
+            }
+
+            storage.extractEnergy(energyNeeded, false);
             sendAnimationStartMessage = true;
             worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 
@@ -159,7 +175,7 @@ public class TileEntityFrameManager extends TileEntityFrameBase {
         Block b = worldObj.getBlock(x, y, z);
 
         /* don't add the block if its an air block or if the block is replaceable (e.g. water, lava, grass, ...) */
-        if(b.isAir(worldObj, x, y, z) || b.isReplaceable(worldObj, x, y, z)) {
+        if(b.isAir(worldObj, x, y, z) || b.isReplaceable(worldObj, x, y, z) || b == Blocks.bedrock) {
             return;
         }
 
@@ -303,6 +319,31 @@ public class TileEntityFrameManager extends TileEntityFrameBase {
         return tile instanceof TileMultipart;
     }
 
+    @Override
+    public int receiveEnergy(ForgeDirection from, int maxReceive, boolean simulate) {
+        return storage.receiveEnergy(maxReceive, simulate);
+    }
+
+    @Override
+    public int extractEnergy(ForgeDirection from, int maxExtract, boolean simulate) {
+        return 0;
+    }
+
+    @Override
+    public int getEnergyStored(ForgeDirection from) {
+        return storage.getEnergyStored();
+    }
+
+    @Override
+    public int getMaxEnergyStored(ForgeDirection from) {
+        return storage.getMaxEnergyStored();
+    }
+
+    @Override
+    public boolean canConnectEnergy(ForgeDirection from) {
+        return true;
+    }
+
     private class MovableBlock {
         private Pos oldPos;
         private Pos newPos;
@@ -324,6 +365,7 @@ public class TileEntityFrameManager extends TileEntityFrameBase {
         for(int i = 0; i<tmp.length;i+=3){
             relativeConstruction.add(new Pos(tmp[i], tmp[i + 1], tmp[i + 2]));
         }
+        storage.readFromNBT(tag);
     }
 
     @Override
@@ -338,6 +380,7 @@ public class TileEntityFrameManager extends TileEntityFrameBase {
             }
             tag.setIntArray("relativeConstruction", tmp);
         }
+        storage.writeToNBT(tag);
     }
 
     @Override

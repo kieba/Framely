@@ -93,11 +93,6 @@ public class BlockFrameManager extends BlockFrameBase implements ITileEntityProv
     }
 
     @Override
-    public boolean isOpaqueCube() {
-        return false;
-    }
-
-    @Override
     public IIcon getIcon(IBlockAccess blockAccess, int x, int y, int z, int side) {
         TileEntity tileEntity = blockAccess.getTileEntity(x, y, z);
         if(tileEntity instanceof TileEntityFrameManager) {
