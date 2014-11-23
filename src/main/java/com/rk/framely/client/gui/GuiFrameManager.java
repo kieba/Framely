@@ -39,9 +39,20 @@ public class GuiFrameManager extends GuiContainer {
     }
 
     @Override
-    protected void actionPerformed(GuiButton p_146284_1_) {
-        PacketTileSimpleAction ptsa = new PacketTileSimpleAction(Reference.NETWORK_PACKET_ID_TILE_SIMPLE_ACTION,frameManager.getPosition(),"buildConstruct");
-        Framely.INSTANCE.packetHandler.sendPacket(ptsa.getPacket());
+    protected void actionPerformed(GuiButton button) {
+        if(button.id == 0){ //buildConstruct
+            PacketTileSimpleAction ptsa = new PacketTileSimpleAction(Reference.NETWORK_PACKET_ID_TILE_SIMPLE_ACTION,frameManager.getPosition(),"buildConstruct");
+            Framely.INSTANCE.packetHandler.sendPacket(ptsa.getPacket());
+        }
+        if(button.id == 1){ //buildConstruct
+            PacketTileSimpleAction ptsa = new PacketTileSimpleAction(Reference.NETWORK_PACKET_ID_TILE_SIMPLE_ACTION,frameManager.getPosition(),"removeConstruct");
+            Framely.INSTANCE.packetHandler.sendPacket(ptsa.getPacket());
+        }
+        if(button.id == 2){ //buildConstruct
+            PacketTileSimpleAction ptsa = new PacketTileSimpleAction(Reference.NETWORK_PACKET_ID_TILE_SIMPLE_ACTION,frameManager.getPosition(),"grid");
+            Framely.INSTANCE.packetHandler.sendPacket(ptsa.getPacket());
+        }
+
     }
 
     @Override
@@ -74,7 +85,16 @@ public class GuiFrameManager extends GuiContainer {
         int x = (width - xSize) / 2;
         int y = (height - ySize) / 2;
         this.drawTexturedModalRect(x, y, 0, 0, xSize, ySize);
-        fontRendererObj.drawString("bääm",50,50,4210752);
+        fontRendererObj.drawString("Build Construct",x+20,y+10,4210752);
+        fontRendererObj.drawString("Destroy Construct",x+20,y+25,4210752);
 
+        if(frameManager.showConstructionGrid){
+            fontRendererObj.drawString("Hide Construct Grid",x+20,y+40,4210752);
+        }else
+        {
+            fontRendererObj.drawString("Show Construct Grid",x+20,y+40,4210752);
+        }
+
+        fontRendererObj.drawString("Power Consumption: " + frameManager.getEnergyPerMovement() + " RF", x+10, y+60, 4210752);
     }
 }

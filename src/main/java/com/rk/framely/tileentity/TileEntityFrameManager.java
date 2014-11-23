@@ -30,6 +30,7 @@ public class TileEntityFrameManager extends TileEntityFrameBase implements IPack
     public ForgeDirection direction;
     public int tick = 0;
     public boolean move = false;
+    public boolean showConstructionGrid = false;
     public boolean sendAnimationStartMessage = false;
     private EnergyStorage storage = new EnergyStorage(ENERGY_PER_BLOCK * 1024, 10000, Integer.MAX_VALUE);
 
@@ -127,15 +128,6 @@ public class TileEntityFrameManager extends TileEntityFrameBase implements IPack
     public int getEnergyPerMovement() {
         return ENERGY_PER_BLOCK * relativeConstruction.size();
     }
-
-    private String debugOut(List<Pos> list){
-        String tmp = "";
-        for(int i = 0; i<list.size();i++){
-            tmp += "("+list.get(i).x + "," + list.get(i).y + ","+ list.get(i).z + "),";
-        }
-        return "{" + tmp + "}";
-    }
-
 
     /**
      * srcPos is the position of the engine
@@ -328,7 +320,15 @@ public class TileEntityFrameManager extends TileEntityFrameBase implements IPack
             if(ptsa.command.equals("buildConstruct")){
                 onConstructionChanged();
             }
+            if(ptsa.command.equals("removeConstruct")){
+                unRegisterFrameManager();
+            }
+            if(ptsa.command.equals("grid")){
+                showConstructionGrid = !showConstructionGrid;
+                worldObj.markBlockForUpdate(xCoord,yCoord,zCoord);
+            }
         }
+
     }
 
     @Override
