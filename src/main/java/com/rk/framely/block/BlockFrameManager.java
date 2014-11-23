@@ -1,9 +1,5 @@
 package com.rk.framely.block;
 
-import com.rk.framely.Framely;
-import com.rk.framely.network.IPacketReceiver;
-import com.rk.framely.network.Packet;
-import com.rk.framely.network.PacketTileSimpleAction;
 import com.rk.framely.proxy.ClientProxy;
 import com.rk.framely.reference.Reference;
 import com.rk.framely.tileentity.TileEntityEngine;
@@ -47,13 +43,10 @@ public class BlockFrameManager extends BlockFrameBase implements ITileEntityProv
         if (world.isRemote) {
             return true;
         } else {
-            player.openGui(Framely.INSTANCE, Reference.GUI_FRAME_MANAGER,world,x,y,z);
-
-
-            //TileEntity tile = world.getTileEntity(x, y, z);
-            //if (tile instanceof TileEntityFrameManager) {
-            //    ((TileEntityFrameManager) tile).onBlockActivated();
-            //}
+            TileEntity tile = world.getTileEntity(x, y, z);
+            if (tile instanceof TileEntityFrameManager) {
+                ((TileEntityFrameManager) tile).onBlockActivated();
+            }
             return true;
         }
     }
@@ -100,13 +93,6 @@ public class BlockFrameManager extends BlockFrameBase implements ITileEntityProv
     }
 
     @Override
-    public boolean isOpaqueCube() {
-        return false;
-    }
-
-
-
-    @Override
     public IIcon getIcon(IBlockAccess blockAccess, int x, int y, int z, int side) {
         TileEntity tileEntity = blockAccess.getTileEntity(x, y, z);
         if(tileEntity instanceof TileEntityFrameManager) {
@@ -121,4 +107,5 @@ public class BlockFrameManager extends BlockFrameBase implements ITileEntityProv
     public IIcon getIcon(int side, int meta) {
         return icons[0];
     }
+
 }
