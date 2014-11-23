@@ -5,7 +5,7 @@ import net.minecraft.client.stream.IngestServerTester;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 
-public class TileEntityFrameBase extends TileEntity {
+public class TileEntityFrameBase extends TileEntityBase {
 
     public Pos relativeFrameManagerPos = Pos.NULL;
 
