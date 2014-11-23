@@ -47,6 +47,11 @@ public class BlockEngine extends BlockFrameBase implements ITileEntityProvider {
     }
 
     @Override
+    public boolean canConnectRedstone(IBlockAccess world, int x, int y, int z, int side) {
+       return true;
+    }
+
+    @Override
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int faceHit, float p_149727_7_, float p_149727_8_, float p_149727_9_) {
         if (world.isRemote) {
             return true;

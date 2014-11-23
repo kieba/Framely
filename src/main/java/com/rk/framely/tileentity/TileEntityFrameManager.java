@@ -4,9 +4,7 @@ import codechicken.multipart.MultipartHelper;
 import codechicken.multipart.TileMultipart;
 import com.rk.framely.Framely;
 import com.rk.framely.block.BlockFrameBase;
-import com.rk.framely.network.MessageEngine;
-import com.rk.framely.network.MessageFrameManager;
-import com.rk.framely.network.PacketHandler;
+import com.rk.framely.network.*;
 import com.rk.framely.util.LogHelper;
 import com.rk.framely.util.Pos;
 import net.minecraft.block.Block;
@@ -22,7 +20,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TileEntityFrameManager extends TileEntityFrameBase {
+public class TileEntityFrameManager extends TileEntityFrameBase implements IPacketReceiver {
 
     public static int ANIMATION_TICKS = 20;
     public ForgeDirection direction;
@@ -301,6 +299,21 @@ public class TileEntityFrameManager extends TileEntityFrameBase {
     @cpw.mods.fml.common.Optional.Method(modid = "ForgeMultipart")
     private boolean isMultipart(TileEntity tile) {
         return tile instanceof TileMultipart;
+    }
+
+    @Override
+    public void ReceiveClientData(com.rk.framely.network.Packet packet) {
+
+    }
+
+    @Override
+    public void ReceiveServerData(com.rk.framely.network.Packet packet) {
+        if(packet instanceof PacketTileSimpleAction){
+            PacketTileSimpleAction ptsa = (PacketTileSimpleAction) packet;
+            if(ptsa.command.equals("buildConstruct")){
+                onConstructionChanged();
+            }
+        }
     }
 
     private class MovableBlock {

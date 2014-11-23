@@ -25,6 +25,8 @@ public class TileEntityEngine extends TileEntityFrameBase {
         tag.setInteger("dir", dir.ordinal());
     }
 
+
+
     public void setDir(ForgeDirection dir) {
         this.dir = dir;
     }

@@ -4,7 +4,7 @@ import com.rk.framely.util.Pos;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 
-public class TileEntityFrameBase extends TileEntity {
+public class TileEntityFrameBase extends TileEntityBase {
     public Pos relativeFrameManagerPos = null;
 
     @Override
@@ -41,7 +41,7 @@ public class TileEntityFrameBase extends TileEntity {
 
     public void onBlockRemoved(){
         TileEntityFrameManager frameManager = getFrameManager();
-        if(frameManager!= null)
+        if(frameManager!= null && !frameManager.move)
             frameManager.onBlockRemovedFromConstruction();
     }
 }
