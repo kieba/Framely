@@ -4,12 +4,15 @@ import cofh.api.energy.EnergyStorage;
 import cofh.api.energy.IEnergyHandler;
 import com.rk.framely.handler.TeleportRegistry;
 import com.rk.framely.util.LogHelper;
+import com.rk.framely.util.Pair;
 import com.rk.framely.util.Pos;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import java.util.UUID;
+import java.util.WeakHashMap;
 
 public class TileEntityTeleporter extends TileEntityBase implements IEnergyHandler {
 
@@ -64,8 +67,9 @@ public class TileEntityTeleporter extends TileEntityBase implements IEnergyHandl
     }
 
     public boolean teleport() {
-        Pos destination = TeleportRegistry.getDestination(this);
-        if(destination.equals(Pos.NULL)) return false;
+        Pair<Pos, World> destination = TeleportRegistry.getDestination(this);
+        Pos pos = destination.getKey();
+        if(pos.equals(Pos.NULL)) return false;
         for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
             TileEntity tileEntity = worldObj.getTileEntity(xCoord + dir.offsetX, yCoord + dir.offsetY, zCoord + dir.offsetZ);
             if(tileEntity instanceof TileEntityFrameBase)  {
@@ -73,10 +77,13 @@ public class TileEntityTeleporter extends TileEntityBase implements IEnergyHandl
                 if(tefm != null) {
                     int energyNeeded = tefm.relativeConstruction.size() * ENERGY_PER_BLOCK;
                     if(storage.getEnergyStored() >= energyNeeded) {
-                        int offsetX = destination.x - xCoord;
-                        int offsetY = destination.y - yCoord;
-                        int offsetZ = destination.z - zCoord;
-                        if(tefm.teleport(offsetX, offsetY, offsetZ)) {
+
+                        //offset from the FrameManager to te Teleporter
+                        int offsetX = tefm.xCoord - xCoord;
+                        int offsetY = tefm.yCoord - yCoord;
+                        int offsetZ = tefm.zCoord - zCoord;
+
+                        if(tefm.teleport(destination.getValue(), pos.x + offsetX, pos.y + offsetY, pos.z + offsetZ)) {
                             storage.extractEnergy(energyNeeded, false);
                             return true;
                         }

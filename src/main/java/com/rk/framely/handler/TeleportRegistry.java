@@ -1,8 +1,9 @@
 package com.rk.framely.handler;
 
 import com.rk.framely.tileentity.TileEntityTeleporter;
-import com.rk.framely.util.LogHelper;
+import com.rk.framely.util.Pair;
 import com.rk.framely.util.Pos;
+import net.minecraft.world.World;
 
 import java.util.*;
 
@@ -13,11 +14,13 @@ public class TeleportRegistry {
     public static boolean registerTeleporter(TileEntityTeleporter tile) {
         Entry entry = getEntry(tile.getUuid());
         boolean registered = false;
-        if(entry.teleporter[0].equals(Pos.NULL)) {
-            entry.teleporter[0] = tile.getPosition();
+        if(entry.pos[0].equals(Pos.NULL)) {
+            entry.pos[0] = tile.getPosition();
+            entry.dimension[0] = tile.getWorldObj();
             registered = true;
-        } else if(entry.teleporter[1].equals(Pos.NULL)) {
-            entry.teleporter[1] = tile.getPosition();
+        } else if(entry.pos[1].equals(Pos.NULL)) {
+            entry.pos[1] = tile.getPosition();
+            entry.dimension[1] = tile.getWorldObj();
             registered = true;
         }
         return registered;
@@ -25,23 +28,25 @@ public class TeleportRegistry {
 
     public static void unregisterTeleporter(TileEntityTeleporter tile) {
         Entry entry = getEntry(tile.getUuid());
-        if(entry.teleporter[0].equals(tile.getPosition())) {
-            entry.teleporter[0] = Pos.NULL;
-        } else if(entry.teleporter[1].equals(tile.getPosition())) {
-            entry.teleporter[1] = Pos.NULL;
+        if(entry.pos[0].equals(tile.getPosition())) {
+            entry.pos[0] = Pos.NULL;
+            entry.dimension[0] = null;
+        } else if(entry.pos[1].equals(tile.getPosition())) {
+            entry.pos[1] = Pos.NULL;
+            entry.dimension[1] = null;
         }
 
-        if(entry.teleporter[0].equals(Pos.NULL) && entry.teleporter[1].equals(Pos.NULL)) {
+        if(entry.pos[0].equals(Pos.NULL) && entry.pos[1].equals(Pos.NULL)) {
             entries.remove(tile.getUuid());
         }
     }
 
-    public static Pos getDestination(TileEntityTeleporter tile) {
+    public static Pair<Pos, World> getDestination(TileEntityTeleporter tile) {
         Entry entry = getEntry(tile.getUuid());
-        if(entry.teleporter[0].equals(tile.getPosition())) {
-            return entry.teleporter[1];
+        if(entry.pos[0].equals(tile.getPosition())) {
+            return new Pair<Pos, World>(entry.pos[1], entry.dimension[1]);
         } else {
-            return entry.teleporter[0];
+            return new Pair<Pos, World>(entry.pos[0], entry.dimension[0]);
         }
     }
 
@@ -56,9 +61,11 @@ public class TeleportRegistry {
 
     private static class Entry {
 
-        private Pos[] teleporter = new Pos[] {
+        private Pos[] pos = new Pos[] {
                 Pos.NULL,
                 Pos.NULL
         };
+
+        private World[] dimension = new World[] {null, null};
     }
 }

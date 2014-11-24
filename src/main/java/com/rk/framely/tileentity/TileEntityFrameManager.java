@@ -44,7 +44,9 @@ public class TileEntityFrameManager extends TileEntityFrameBase implements IPack
                 tick = 0;
                 move = false;
                 /* move the relativeConstruction (server side only) */
-                if(!worldObj.isRemote) move(direction.offsetX, direction.offsetY, direction.offsetZ);
+                if(!worldObj.isRemote) {
+                    move(worldObj, xCoord + direction.offsetX, yCoord + direction.offsetY, zCoord + direction.offsetZ);
+                }
             }
         }
     }
@@ -140,7 +142,7 @@ public class TileEntityFrameManager extends TileEntityFrameBase implements IPack
             this.move = true;
 
             /* check if relativeConstruction is movable */
-            if(!isMovable(dir.offsetX, dir.offsetY, dir.offsetZ)) {
+            if(!isMovable(worldObj, xCoord + dir.offsetX, yCoord + dir.offsetY, zCoord + dir.offsetZ)) {
                 this.move = false;
                 return false;
             }
@@ -160,13 +162,15 @@ public class TileEntityFrameManager extends TileEntityFrameBase implements IPack
         return false;
     }
 
-    public boolean teleport(int offsetX, int offsetY, int offsetZ) {
+    public boolean teleport(World destWorld, int destX, int destY, int destZ) {
         if(worldObj.isRemote) return false;
-        if(!isMovable(offsetX, offsetY, offsetZ)) {
-            this.move = false;
+
+        if(move) return false;
+
+        if(!isMovable(destWorld, destX, destY, destZ)) {
             return false;
         }
-        move(offsetX, offsetY, offsetZ);
+        move(destWorld, destX, destY, destZ);
         return true;
     }
 
@@ -195,14 +199,10 @@ public class TileEntityFrameManager extends TileEntityFrameBase implements IPack
      * check all positions if they can be moved
      * @return
      */
-    private boolean isMovable(int offsetX, int offsetY, int offsetZ) {
+    private boolean isMovable(World world, int destX, int destY, int destZ) {
         boolean isMovable = true;
         for (int i = 0; i < relativeConstruction.size(); i++) {
-            Pos absolutPos = relativeConstruction.get(i).clone();
-            absolutPos.x += xCoord;
-            absolutPos.y += yCoord;
-            absolutPos.z += zCoord;
-            if(!isMovable(absolutPos, offsetX, offsetY, offsetZ)) {
+            if(!isMovable(world, relativeConstruction.get(i), destX, destY, destZ)) {
                 isMovable = false;
                 break;
             }
@@ -210,44 +210,46 @@ public class TileEntityFrameManager extends TileEntityFrameBase implements IPack
         return isMovable;
     }
 
-    private boolean isMovable(Pos p, int offsetX, int offsetY, int offsetZ) {
-        Pos newPos = new Pos(p.x + offsetX, p.y + offsetY, p.z + offsetZ);
-        Block b = worldObj.getBlock(newPos.x, newPos.y, newPos.z);
-        if(b.isReplaceable(worldObj, newPos.x, newPos.y, newPos.z)) {
+    private boolean isMovable(World world, Pos p, int destX, int destY, int destZ) {
+        Pos newPos = new Pos(destX + p.x, destY + p.y, destZ + p.z);
+        Block b = world.getBlock(newPos.x, newPos.y, newPos.z);
+        if(b.isReplaceable(world, newPos.x, newPos.y, newPos.z)) {
             return true;
         }
-        if(relativeConstruction.contains(new Pos(newPos.x - xCoord, newPos.y - yCoord, newPos.z - zCoord))) {
+        Pos tmp = new Pos(newPos.x - xCoord, newPos.y - yCoord, newPos.z - zCoord);
+        if(worldObj == world && relativeConstruction.contains(tmp)) {
             return true;
         }
         return false;
     }
 
-    private void move(int offsetX, int offsetY, int offsetZ) {
+    private void move(World world, int destX, int destY, int destZ) {
         ArrayList<MovableBlock> blockArrayList = new ArrayList<MovableBlock>();
 
         /* save old state and remove tile entities*/
         for (int i = 0; i < relativeConstruction.size(); i++) {
-            Pos absolutPos = relativeConstruction.get(i).clone();
-            absolutPos.x += xCoord;
-            absolutPos.y += yCoord;
-            absolutPos.z += zCoord;
-            MovableBlock mb = getBlock(absolutPos, offsetX, offsetY, offsetZ);
+            Pos relPos = relativeConstruction.get(i);
+            Pos oldPos = new Pos(xCoord + relPos.x, yCoord + relPos.y, zCoord + relPos.z);
+            Pos newPos = new Pos(destX + relPos.x, destY + relPos.y, destZ + relPos.z);
+            MovableBlock mb = getBlock(oldPos, newPos, world);
             blockArrayList.add(mb);
-
             worldObj.removeTileEntity(mb.oldPos.x, mb.oldPos.y, mb.oldPos.z);
         }
 
         /* add air blocks to the position where no new block will be added, only the old block removed */
-        for (int i = 0; i < blockArrayList.size(); i++) {
+        int size = blockArrayList.size();
+        for (int i = 0; i < size; i++) {
             boolean addAirBlock = true;
             Pos oldPos = blockArrayList.get(i).oldPos;
-            if(oldPos == null) continue;
 
-            for (int j = 0; j < blockArrayList.size(); j++) {
-                Pos newPos = blockArrayList.get(j).newPos;
-                if(oldPos.equals(newPos)) {
-                    addAirBlock = false;
-                    break;
+            if(world == worldObj) {
+                if(oldPos == null) continue;
+                for (int j = 0; j < blockArrayList.size(); j++) {
+                    Pos newPos = blockArrayList.get(j).newPos;
+                    if(oldPos.equals(newPos)) {
+                        addAirBlock = false;
+                        break;
+                    }
                 }
             }
 
@@ -257,57 +259,59 @@ public class TileEntityFrameManager extends TileEntityFrameBase implements IPack
                 mb.block = Blocks.air;
                 mb.oldBlock = blockArrayList.get(i).block;
                 mb.meta = 0;
+                mb.newWorld = worldObj;
                 blockArrayList.add(mb);
             }
         }
 
         /* place new blocks */
         for (int i = 0; i < blockArrayList.size(); i++) {
-            placeBlock(worldObj, blockArrayList.get(i));
+            placeBlock(blockArrayList.get(i));
         }
 
         /* update all blocks */
         for (int i = 0; i < blockArrayList.size(); i++) {
             MovableBlock mb = blockArrayList.get(i);
-            Chunk c = worldObj.getChunkFromBlockCoords(mb.newPos.x, mb.newPos.z);
-            worldObj.markAndNotifyBlock(mb.newPos.x, mb.newPos.y, mb.newPos.z, c, mb.oldBlock, mb.block, 3);
+            Chunk c = mb.newWorld.getChunkFromBlockCoords(mb.newPos.x, mb.newPos.z);
+            mb.newWorld.markAndNotifyBlock(mb.newPos.x, mb.newPos.y, mb.newPos.z, c, mb.oldBlock, mb.block, 3);
         }
     }
 
-    private MovableBlock getBlock(Pos p, int offsetX, int offsetY, int offsetZ) {
+    private MovableBlock getBlock(Pos oldPos, Pos newPos, World newWorld) {
         MovableBlock mb = new MovableBlock();
-        mb.oldPos = p;
-        mb.newPos = new Pos(p.x + offsetX, p.y + offsetY, p.z + offsetZ);
+        mb.oldPos = oldPos;
+        mb.newPos = newPos;
         mb.oldBlock = worldObj.getBlock(mb.newPos.x, mb.newPos.y, mb.newPos.z);
-        mb.block = worldObj.getBlock(p.x, p.y, p.z);
-        mb.meta = worldObj.getBlockMetadata(p.x, p.y, p.z);
-        mb.tileEntity = worldObj.getTileEntity(p.x, p.y, p.z);
+        mb.block = worldObj.getBlock(oldPos.x, oldPos.y, oldPos.z);
+        mb.meta = worldObj.getBlockMetadata(oldPos.x, oldPos.y, oldPos.z);
+        mb.tileEntity = worldObj.getTileEntity(oldPos.x, oldPos.y, oldPos.z);
         if(mb.tileEntity != null) {
             NBTTagCompound tag = new NBTTagCompound();
             mb.tileEntity.writeToNBT(tag);
             mb.tagCompound = tag;
         }
+        mb.newWorld = newWorld;
         return mb;
     }
 
-    private void placeBlock(World world, MovableBlock mb) {
-        world.setBlock(mb.newPos.x, mb.newPos.y, mb.newPos.z, mb.block, mb.meta, 0);
-        world.setBlockMetadataWithNotify(mb.newPos.x, mb.newPos.y, mb.newPos.z, mb.meta, 0);
+    private void placeBlock(MovableBlock mb) {
+        mb.newWorld.setBlock(mb.newPos.x, mb.newPos.y, mb.newPos.z, mb.block, mb.meta, 0);
+        mb.newWorld.setBlockMetadataWithNotify(mb.newPos.x, mb.newPos.y, mb.newPos.z, mb.meta, 0);
 
         if (mb.tileEntity != null) {
             TileEntity newTile = TileEntity.createAndLoadEntity(mb.tagCompound);
 
             if(Framely.isFMPLoaded && isMultipart(mb.tileEntity)) {
-                newTile = MultipartHelper.createTileFromNBT(world, mb.tagCompound);
+                newTile = MultipartHelper.createTileFromNBT(mb.newWorld, mb.tagCompound);
             }
 
-            world.setTileEntity(mb.newPos.x, mb.newPos.y, mb.newPos.z, newTile);
+            mb.newWorld.setTileEntity(mb.newPos.x, mb.newPos.y, mb.newPos.z, newTile);
             newTile.xCoord = mb.newPos.x;
             newTile.yCoord = mb.newPos.y;
             newTile.zCoord = mb.newPos.z;
 
             if(Framely.isFMPLoaded && isMultipart(mb.tileEntity)) {
-                MultipartHelper.sendDescPacket(world, newTile);
+                MultipartHelper.sendDescPacket(mb.newWorld, newTile);
             }
         }
     }
@@ -373,6 +377,7 @@ public class TileEntityFrameManager extends TileEntityFrameBase implements IPack
         private TileEntity tileEntity;
         private NBTTagCompound tagCompound;
         private int meta;
+        private World newWorld;
     }
 
 
