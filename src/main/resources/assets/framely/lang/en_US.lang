@@ -1,3 +1,6 @@
 tile.framely:frame.name=Frame
 tile.framely:engine.name=Engine
 tile.framely:frameManager.name=Frame Manager
+tile.framely:teleporter.name=Frame Teleporter
+
+item.framely:linker.name=Teleport Linker

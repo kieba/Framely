@@ -43,7 +43,7 @@ public class TileEntityFrameManager extends TileEntityFrameBase implements IPack
                 tick = 0;
                 move = false;
                 /* move the relativeConstruction (server side only) */
-                if(!worldObj.isRemote) move(direction);
+                if(!worldObj.isRemote) move(direction.offsetX, direction.offsetY, direction.offsetZ);
             }
         }
     }
@@ -148,7 +148,7 @@ public class TileEntityFrameManager extends TileEntityFrameBase implements IPack
             this.move = true;
 
             /* check if relativeConstruction is movable */
-            if(!isMovable(dir)) {
+            if(!isMovable(dir.offsetX, dir.offsetY, dir.offsetZ)) {
                 this.move = false;
                 return false;
             }
@@ -166,6 +166,16 @@ public class TileEntityFrameManager extends TileEntityFrameBase implements IPack
             return true;
         }
         return false;
+    }
+
+    public boolean teleport(int offsetX, int offsetY, int offsetZ) {
+        if(worldObj.isRemote) return false;
+        if(!isMovable(offsetX, offsetY, offsetZ)) {
+            this.move = false;
+            return false;
+        }
+        move(offsetX, offsetY, offsetZ);
+        return true;
     }
 
     private void visitBlock(List<Pos> construction, int x, int y, int z) {
@@ -191,17 +201,16 @@ public class TileEntityFrameManager extends TileEntityFrameBase implements IPack
 
     /**
      * check all positions if they can be moved
-     * @param dir
      * @return
      */
-    private boolean isMovable(ForgeDirection dir) {
+    private boolean isMovable(int offsetX, int offsetY, int offsetZ) {
         boolean isMovable = true;
         for (int i = 0; i < relativeConstruction.size(); i++) {
             Pos absolutPos = relativeConstruction.get(i).clone();
             absolutPos.x += xCoord;
             absolutPos.y += yCoord;
             absolutPos.z += zCoord;
-            if(!isMovable(absolutPos, dir)) {
+            if(!isMovable(absolutPos, offsetX, offsetY, offsetZ)) {
                 isMovable = false;
                 break;
             }
@@ -209,8 +218,8 @@ public class TileEntityFrameManager extends TileEntityFrameBase implements IPack
         return isMovable;
     }
 
-    private boolean isMovable(Pos p, ForgeDirection dir) {
-        Pos newPos = new Pos(p.x + dir.offsetX, p.y + dir.offsetY, p.z + dir.offsetZ);
+    private boolean isMovable(Pos p, int offsetX, int offsetY, int offsetZ) {
+        Pos newPos = new Pos(p.x + offsetX, p.y + offsetY, p.z + offsetZ);
         Block b = worldObj.getBlock(newPos.x, newPos.y, newPos.z);
         if(b.isReplaceable(worldObj, newPos.x, newPos.y, newPos.z)) {
             return true;
@@ -221,7 +230,7 @@ public class TileEntityFrameManager extends TileEntityFrameBase implements IPack
         return false;
     }
 
-    private void move(ForgeDirection dir) {
+    private void move(int offsetX, int offsetY, int offsetZ) {
         ArrayList<MovableBlock> blockArrayList = new ArrayList<MovableBlock>();
 
         /* save old state and remove tile entities*/
@@ -230,7 +239,7 @@ public class TileEntityFrameManager extends TileEntityFrameBase implements IPack
             absolutPos.x += xCoord;
             absolutPos.y += yCoord;
             absolutPos.z += zCoord;
-            MovableBlock mb = getBlock(absolutPos, dir);
+            MovableBlock mb = getBlock(absolutPos, offsetX, offsetY, offsetZ);
             blockArrayList.add(mb);
 
             worldObj.removeTileEntity(mb.oldPos.x, mb.oldPos.y, mb.oldPos.z);
@@ -273,10 +282,10 @@ public class TileEntityFrameManager extends TileEntityFrameBase implements IPack
         }
     }
 
-    private MovableBlock getBlock(Pos p, ForgeDirection dir) {
+    private MovableBlock getBlock(Pos p, int offsetX, int offsetY, int offsetZ) {
         MovableBlock mb = new MovableBlock();
         mb.oldPos = p;
-        mb.newPos = new Pos(p.x + dir.offsetX, p.y + dir.offsetY, p.z + dir.offsetZ);
+        mb.newPos = new Pos(p.x + offsetX, p.y + offsetY, p.z + offsetZ);
         mb.oldBlock = worldObj.getBlock(mb.newPos.x, mb.newPos.y, mb.newPos.z);
         mb.block = worldObj.getBlock(p.x, p.y, p.z);
         mb.meta = worldObj.getBlockMetadata(p.x, p.y, p.z);

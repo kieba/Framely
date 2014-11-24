@@ -3,6 +3,7 @@ package com.rk.framely;
 import com.rk.framely.handler.ConfigurationHandler;
 import com.rk.framely.handler.GuiHandler;
 import com.rk.framely.init.ModBlocks;
+import com.rk.framely.init.ModItems;
 import com.rk.framely.init.ModTileEntities;
 import com.rk.framely.network.PacketHandler;
 import com.rk.framely.proxy.IProxy;
@@ -41,6 +42,8 @@ public class Framely {
         PacketHandler.init();
 
         ModBlocks.init();
+
+        ModItems.init();
 
     }
 
