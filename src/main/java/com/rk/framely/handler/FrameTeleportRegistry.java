@@ -1,17 +1,17 @@
 package com.rk.framely.handler;
 
-import com.rk.framely.tileentity.TileEntityTeleporter;
+import com.rk.framely.tileentity.TileEntityFrameTeleporter;
 import com.rk.framely.util.Pair;
 import com.rk.framely.util.Pos;
 import net.minecraft.world.World;
 
 import java.util.*;
 
-public class TeleportRegistry {
+public class FrameTeleportRegistry {
 
     private static HashMap<UUID, Entry> entries = new HashMap<UUID, Entry>();
 
-    public static boolean registerTeleporter(TileEntityTeleporter tile) {
+    public static boolean registerFrameTeleporter(TileEntityFrameTeleporter tile) {
         Entry entry = getEntry(tile.getUuid());
         boolean registered = false;
         if(entry.pos[0].equals(Pos.NULL)) {
@@ -26,7 +26,7 @@ public class TeleportRegistry {
         return registered;
     }
 
-    public static void unregisterTeleporter(TileEntityTeleporter tile) {
+    public static void unregisterFrameTeleporter(TileEntityFrameTeleporter tile) {
         Entry entry = getEntry(tile.getUuid());
         if(entry.pos[0].equals(tile.getPosition())) {
             entry.pos[0] = Pos.NULL;
@@ -41,7 +41,7 @@ public class TeleportRegistry {
         }
     }
 
-    public static Pair<Pos, World> getDestination(TileEntityTeleporter tile) {
+    public static Pair<Pos, World> getDestination(TileEntityFrameTeleporter tile) {
         Entry entry = getEntry(tile.getUuid());
         if(entry.pos[0].equals(tile.getPosition())) {
             return new Pair<Pos, World>(entry.pos[1], entry.dimension[1]);

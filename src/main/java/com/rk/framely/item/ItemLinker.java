@@ -1,24 +1,20 @@
 package com.rk.framely.item;
 
 import com.rk.framely.reference.Reference;
-import com.rk.framely.tileentity.TileEntityTeleporter;
-import com.rk.framely.util.LogHelper;
-import com.rk.framely.util.Pos;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.ChatStyle;
-import net.minecraft.util.IChatComponent;
 import net.minecraft.world.World;
 
-import java.util.Iterator;
 import java.util.List;
-import java.util.UUID;
 
 public class ItemLinker extends ItemBase {
+
+    public enum TeleporterType {
+        Player,
+        Frame
+    }
 
     public ItemLinker() {
         super();
@@ -34,7 +30,9 @@ public class ItemLinker extends ItemBase {
                 tag.removeTag("uuidMSB");
                 tag.removeTag("uuidLSB");
                 tag.removeTag("pos");
-                player.addChatMessage(new ChatComponentText("Cleared teleporter position!"));
+                tag.removeTag("dim");
+                tag.removeTag("type");
+                player.addChatMessage(new ChatComponentText("Cleared linker position!"));
             }
         }
         return stack;
@@ -45,7 +43,8 @@ public class ItemLinker extends ItemBase {
         NBTTagCompound tag = stack.getTagCompound();
         if(tag != null && tag.hasKey("uuidMSB")) {
             int[] pos = tag.getIntArray("pos");
-            list.add("Linked to x: " + pos[0] + " y: " + pos[1] + " z: " + pos[2]);
+            TeleporterType type = TeleporterType.values()[tag.getInteger("type")];
+            list.add(type + "-Teleporter linked to x: " + pos[0] + " y: " + pos[1] + " z: " + pos[2] + " dimension: " + tag.getString("dim"));
         }
     }
 }

@@ -2,8 +2,7 @@ package com.rk.framely.tileentity;
 
 import cofh.api.energy.EnergyStorage;
 import cofh.api.energy.IEnergyHandler;
-import com.rk.framely.handler.TeleportRegistry;
-import com.rk.framely.util.LogHelper;
+import com.rk.framely.handler.FrameTeleportRegistry;
 import com.rk.framely.util.Pair;
 import com.rk.framely.util.Pos;
 import net.minecraft.nbt.NBTTagCompound;
@@ -12,11 +11,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import java.util.UUID;
-import java.util.WeakHashMap;
 
-public class TileEntityTeleporter extends TileEntityBase implements IEnergyHandler {
-
-    //TODO: make teleport working across dimensions
+public class TileEntityFrameTeleporter extends TileEntityBase implements IEnergyHandler {
 
     private static final int ENERGY_PER_BLOCK = 3200;
     private UUID uuid = UUID.randomUUID();
@@ -25,13 +21,13 @@ public class TileEntityTeleporter extends TileEntityBase implements IEnergyHandl
     @Override
     public void invalidate() {
         super.invalidate();
-        if(!worldObj.isRemote) TeleportRegistry.unregisterTeleporter(this);
+        if(!worldObj.isRemote) FrameTeleportRegistry.unregisterFrameTeleporter(this);
     }
 
     @Override
     public void validate() {
         super.validate();
-        if(!worldObj.isRemote) TeleportRegistry.registerTeleporter(this);
+        if(!worldObj.isRemote) FrameTeleportRegistry.registerFrameTeleporter(this);
     }
 
     @Override
@@ -57,17 +53,17 @@ public class TileEntityTeleporter extends TileEntityBase implements IEnergyHandl
         if(worldObj.isRemote) return false;
         UUID oldUuid = new UUID(this.uuid.getMostSignificantBits(), this.uuid.getLeastSignificantBits());
         this.uuid = uuid;
-        TeleportRegistry.unregisterTeleporter(this);
-        if(!TeleportRegistry.registerTeleporter(this)) {
+        FrameTeleportRegistry.unregisterFrameTeleporter(this);
+        if(!FrameTeleportRegistry.registerFrameTeleporter(this)) {
             this.uuid = oldUuid;
-            TeleportRegistry.registerTeleporter(this);
+            FrameTeleportRegistry.registerFrameTeleporter(this);
             return false;
         }
         return true;
     }
 
     public boolean teleport() {
-        Pair<Pos, World> destination = TeleportRegistry.getDestination(this);
+        Pair<Pos, World> destination = FrameTeleportRegistry.getDestination(this);
         Pos pos = destination.getKey();
         if(pos.equals(Pos.NULL)) return false;
         for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
