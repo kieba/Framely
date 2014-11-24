@@ -21,7 +21,8 @@ public class TileEntityFrameManagerRenderer extends TileEntitySpecialRenderer {
             if(tile.move) {
                 ConstructionRenderer.renderConstructionMovement(tile.relativeConstruction, x, y, z, tile.direction, tile.tick, TileEntityFrameManager.ANIMATION_TICKS);
             } else {
-                ConstructionRenderer.renderConstruction(tile.relativeConstruction, x, y, z);
+                if(tile.showConstructionGrid)
+                    ConstructionRenderer.renderConstruction(tile.relativeConstruction, x, y, z);
             }
 
         }

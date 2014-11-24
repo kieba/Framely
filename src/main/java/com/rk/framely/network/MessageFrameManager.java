@@ -27,6 +27,7 @@ public class MessageFrameManager implements IMessage, IMessageHandler<MessageFra
     private int x, y,z;
     private List<Pos> construction = new ArrayList<Pos>();
     private int direction;
+    private boolean showGrid;
 
     public MessageFrameManager() {}
 
@@ -34,6 +35,7 @@ public class MessageFrameManager implements IMessage, IMessageHandler<MessageFra
         x = tile.xCoord;
         y = tile.yCoord;
         z = tile.zCoord;
+        showGrid = tile.showConstructionGrid;
         if(tile.sendAnimationStartMessage) {
             type = Type.START_ANIMATION;
             tile.sendAnimationStartMessage = false;
@@ -51,6 +53,7 @@ public class MessageFrameManager implements IMessage, IMessageHandler<MessageFra
         this.x = buf.readInt();
         this.y = buf.readInt();
         this.z = buf.readInt();
+        this.showGrid = buf.readBoolean();
         type = Type.values()[buf.readInt()];
         if(type == Type.UPDATE) {
             int size = buf.readInt();
@@ -70,6 +73,7 @@ public class MessageFrameManager implements IMessage, IMessageHandler<MessageFra
         buf.writeInt(x);
         buf.writeInt(y);
         buf.writeInt(z);
+        buf.writeBoolean(showGrid);
         buf.writeInt(type.ordinal());
         if(type == Type.UPDATE) {
             buf.writeInt(construction.size());
@@ -89,6 +93,7 @@ public class MessageFrameManager implements IMessage, IMessageHandler<MessageFra
         TileEntity tileEntity = FMLClientHandler.instance().getClient().theWorld.getTileEntity(message.x, message.y, message.z);
         if (tileEntity instanceof TileEntityFrameManager) {
             TileEntityFrameManager tileEntityFrameManager = ((TileEntityFrameManager) tileEntity);
+            tileEntityFrameManager.showConstructionGrid = message.showGrid;
             if(message.type == Type.UPDATE) {
                 tileEntityFrameManager.relativeConstruction = message.construction;
                 FMLClientHandler.instance().getClient().theWorld.markBlockForUpdate(message.x, message.y, message.z);
