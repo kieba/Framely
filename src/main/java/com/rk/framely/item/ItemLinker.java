@@ -1,6 +1,7 @@
 package com.rk.framely.item;
 
 import com.rk.framely.reference.Reference;
+import com.rk.framely.tileentity.TileEntityTeleporter;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -10,11 +11,6 @@ import net.minecraft.world.World;
 import java.util.List;
 
 public class ItemLinker extends ItemBase {
-
-    public enum TeleporterType {
-        Player,
-        Frame
-    }
 
     public ItemLinker() {
         super();
@@ -43,7 +39,7 @@ public class ItemLinker extends ItemBase {
         NBTTagCompound tag = stack.getTagCompound();
         if(tag != null && tag.hasKey("uuidMSB")) {
             int[] pos = tag.getIntArray("pos");
-            TeleporterType type = TeleporterType.values()[tag.getInteger("type")];
+            TileEntityTeleporter.TeleporterType type = TileEntityTeleporter.TeleporterType.values()[tag.getInteger("type")];
             list.add(type + "-Teleporter linked to x: " + pos[0] + " y: " + pos[1] + " z: " + pos[2] + " dimension: " + tag.getString("dim"));
         }
     }

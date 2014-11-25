@@ -66,7 +66,6 @@ public class BlockFrameManager extends BlockFrameBase implements ITileEntityProv
     @Override
     @SideOnly(Side.CLIENT)
     public void registerBlockIcons(IIconRegister iconRegister) {
-        super.registerBlockIcons(iconRegister);
         String name = getUnwrappedUnlocalizedName(this.getUnlocalizedName());
         blockMovement = iconRegister.registerIcon(name + "_blockMovement");
         icons[0] = iconRegister.registerIcon(name + "_unbound");

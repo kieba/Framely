@@ -138,6 +138,7 @@ public class TileEntityFrameManager extends TileEntityFrameBase implements IPack
      */
     public boolean moveConstruction(ForgeDirection dir) {
         if(!worldObj.isRemote) { //server side only
+            if(move) return false;
             this.direction = dir;
             this.move = true;
 

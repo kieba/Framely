@@ -13,11 +13,21 @@ public class ClientProxy extends CommonProxy {
     private static WorldRendererFrameManager worldRendererFrameManager = new WorldRendererFrameManager();
 
     @Override
+    public void preInit() {
+
+    }
+
+    @Override
     public void init() {
         renderIdFrameManager = RenderingRegistry.getNextAvailableRenderId();
 
         RenderingRegistry.registerBlockHandler(renderIdFrameManager, worldRendererFrameManager);
 
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityFrameManager.class, new TileEntityFrameManagerRenderer());
+    }
+
+    @Override
+    public void postInit() {
+
     }
 }

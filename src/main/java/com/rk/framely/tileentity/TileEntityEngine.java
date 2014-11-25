@@ -35,16 +35,13 @@ public class TileEntityEngine extends TileEntityFrameBase {
         return dir;
     }
 
-    public void onBlockActivated() {
-        //ConstructionHelper.moveConstruction(worldObj, new Pos(xCoord, yCoord, zCoord), dir);
+    public void move() {
         if(relativeFrameManagerPos.equals(Pos.NULL)) return;
         TileEntity entity = worldObj.getTileEntity(relativeFrameManagerPos.x + xCoord, relativeFrameManagerPos.y + yCoord, relativeFrameManagerPos.z + zCoord);
-
         if(entity instanceof TileEntityFrameManager){
             TileEntityFrameManager frameManager = (TileEntityFrameManager)entity;
             frameManager.moveConstruction(dir);
         }
-
     }
 
     @Override

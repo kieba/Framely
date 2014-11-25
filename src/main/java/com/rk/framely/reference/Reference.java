@@ -11,8 +11,7 @@ public class Reference {
 
     public static final String BLOCK_FRAME_NAME = "frame";
     public static final String BLOCK_ENGINE_NAME = "engine";
-    public static final String BLOCK_FRAME_TELEPORTER_NAME = "frameteleporter";
-    public static final String BLOCK_PLAYER_TELEPORTER_NAME = "playerteleporter";
+    public static final String BLOCK_TELEPORTER_NAME = "teleporter";
     public static final String BLOCK_FRAME_MANAGER_NAME = "frameManager";
 
     public static final String ITEM_LINKER_NAME = "linker";
