@@ -1,19 +1,20 @@
 package com.rk.framely.handler;
 
 import com.rk.framely.tileentity.TileEntityTeleporter;
-import com.rk.framely.util.LogHelper;
 import com.rk.framely.util.Pair;
 import com.rk.framely.util.Pos;
 import net.minecraft.world.World;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.UUID;
 
-public class FrameTeleportRegistry {
+public class TeleportRegistry {
 
-    private static HashMap<UUID, LinkEntry> entries = new HashMap<UUID, LinkEntry>();
+    private static HashMap<UUID, LinkEntry> playerRegistry = new HashMap<UUID, LinkEntry>();
+    private static HashMap<UUID, LinkEntry> frameRegistry = new HashMap<UUID, LinkEntry>();
 
     public static boolean register(TileEntityTeleporter tile) {
-        LinkEntry entry = getEntry(tile.getUuid());
+        LinkEntry entry = getEntry(getRegistry(tile), tile);
         boolean registered = false;
         if(entry.pos[0].equals(Pos.NULL)) {
             entry.pos[0] = tile.getPosition();
@@ -28,7 +29,8 @@ public class FrameTeleportRegistry {
     }
 
     public static void unregister(TileEntityTeleporter tile) {
-        LinkEntry entry = getEntry(tile.getUuid());
+        HashMap<UUID, LinkEntry> registry = getRegistry(tile);
+        LinkEntry entry = getEntry(registry, tile);
         if(entry.pos[0].equals(tile.getPosition())) {
             entry.pos[0] = Pos.NULL;
             entry.dimension[0] = null;
@@ -36,11 +38,13 @@ public class FrameTeleportRegistry {
             entry.pos[1] = Pos.NULL;
             entry.dimension[1] = null;
         }
-        removeIfEmpty(entry, tile.getUuid());
+        if(entry.pos[0].equals(Pos.NULL) && entry.pos[1].equals(Pos.NULL)) {
+            registry.remove(tile.getUuid());
+        }
     }
 
     public static Pair<Pos, World> getDestination(TileEntityTeleporter tile) {
-        LinkEntry entry = getEntry(tile.getUuid());
+        LinkEntry entry = getEntry(getRegistry(tile), tile);
         if(entry.pos[0].equals(tile.getPosition())) {
             return new Pair<Pos, World>(entry.pos[1], entry.dimension[1]);
         } else {
@@ -48,32 +52,31 @@ public class FrameTeleportRegistry {
         }
     }
 
-    private static void removeIfEmpty(LinkEntry e, UUID uuid) {
-        if(e.pos[0].equals(Pos.NULL) && e.pos[1].equals(Pos.NULL)) {
-            entries.remove(uuid);
-        }
-    }
-
-    public static void clear() {
-        entries.clear();
-    }
-
-    private static LinkEntry getEntry(UUID uuid) {
-        LinkEntry entry = entries.get(uuid);
+    private static LinkEntry getEntry(HashMap<UUID, LinkEntry> registry, TileEntityTeleporter tile) {
+        LinkEntry entry = registry.get(tile.getUuid());
         if(entry == null) {
             entry = new LinkEntry();
-            entries.put(uuid, entry);
+            registry.put(tile.getUuid(), entry);
         }
         return entry;
     }
 
+    private static HashMap<UUID, LinkEntry> getRegistry(TileEntityTeleporter tile) {
+        return (tile.getType() == TileEntityTeleporter.TeleporterType.Frame ? frameRegistry : playerRegistry);
+    }
+
+    public static void clear() {
+        frameRegistry.clear();
+        playerRegistry.clear();
+    }
+
     private static class LinkEntry {
 
-        private Pos[] pos = new Pos[] {
+        private Pos[] pos = new Pos[]{
                 Pos.NULL,
                 Pos.NULL
         };
 
-        private World[] dimension = new World[] {null, null};
+        private World[] dimension = new World[]{null, null};
     }
 }

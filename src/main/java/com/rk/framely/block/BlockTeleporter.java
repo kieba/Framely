@@ -43,8 +43,8 @@ public class BlockTeleporter extends BlockBase implements ITileEntityProvider {
         super.onNeighborBlockChange(world, x, y, z, b);
         if(!world.isRemote && world.getStrongestIndirectPower(x, y, z) > 0) {
             TileEntity tile = world.getTileEntity(x, y, z);
-            if (tile instanceof TileEntityEngine) {
-                ((TileEntityEngine) tile).move();
+            if (tile instanceof TileEntityTeleporter) {
+                ((TileEntityTeleporter) tile).teleport();
             }
         }
     }
@@ -95,8 +95,6 @@ public class BlockTeleporter extends BlockBase implements ITileEntityProvider {
                         stack.setTagCompound(tag);
                         player.addChatMessage(new ChatComponentText("Saved " + type.name().toUpperCase() + "-Teleporter position!"));
                     }
-                } else {
-                    tileEntityTeleporter.teleport();
                 }
             }
         }

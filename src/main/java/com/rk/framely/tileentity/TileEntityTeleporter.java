@@ -2,9 +2,7 @@ package com.rk.framely.tileentity;
 
 import cofh.api.energy.EnergyStorage;
 import cofh.api.energy.IEnergyHandler;
-import com.rk.framely.handler.FrameTeleportRegistry;
-import com.rk.framely.handler.PlayerTeleportRegistry;
-import com.rk.framely.util.LogHelper;
+import com.rk.framely.handler.TeleportRegistry;
 import com.rk.framely.util.Pair;
 import com.rk.framely.util.Pos;
 import net.minecraft.entity.player.EntityPlayer;
@@ -12,7 +10,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
-import sun.rmi.runtime.Log;
 
 import java.util.UUID;
 
@@ -24,8 +21,8 @@ public class TileEntityTeleporter extends TileEntityBase implements IEnergyHandl
         Unknown
     }
 
-    private static final int ENERGY_PER_TELEPORT = 100;
-    private static final int ENERGY_PER_BLOCK = 80;
+    private static final int ENERGY_PER_TELEPORT = 100000;
+    private static final int ENERGY_PER_BLOCK = 3200;
     private TeleporterType type;
     private UUID uuid = UUID.randomUUID();
     private EnergyStorage storage = new EnergyStorage(0, 0, 0);
@@ -39,7 +36,7 @@ public class TileEntityTeleporter extends TileEntityBase implements IEnergyHandl
     @Override
     public void invalidate() {
         super.invalidate();
-        if(!worldObj.isRemote) unregister();
+        if(!worldObj.isRemote) TeleportRegistry.unregister(this);
     }
 
     @Override
@@ -50,7 +47,7 @@ public class TileEntityTeleporter extends TileEntityBase implements IEnergyHandl
         } else  if(type == TeleporterType.Player) {
             storage = new EnergyStorage(ENERGY_PER_TELEPORT * 4, 10000, Integer.MAX_VALUE);
         }
-        if(!worldObj.isRemote) register();
+        if(!worldObj.isRemote) TeleportRegistry.register(this);
     }
 
     @Override
@@ -78,17 +75,21 @@ public class TileEntityTeleporter extends TileEntityBase implements IEnergyHandl
         if(worldObj.isRemote) return false;
         UUID oldUuid = new UUID(this.uuid.getMostSignificantBits(), this.uuid.getLeastSignificantBits());
         this.uuid = uuid;
-        unregister();
-        if(!register()) {
+        TeleportRegistry.unregister(this);
+        if(!TeleportRegistry.register(this)) {
             this.uuid = oldUuid;
-            register();
+            TeleportRegistry.register(this);
             return false;
         }
         return true;
     }
 
+    public TeleporterType getType() {
+        return type;
+    }
+
     public boolean teleport() {
-        Pair<Pos, World> destination = getDestination();
+        Pair<Pos, World> destination = TeleportRegistry.getDestination(this);
         Pos pos = destination.getKey();
         if(pos.equals(Pos.NULL)) return false;
         if(type == TeleporterType.Frame) {
@@ -125,34 +126,6 @@ public class TileEntityTeleporter extends TileEntityBase implements IEnergyHandl
             }
         }
         return false;
-    }
-
-    private boolean register() {
-        if(type == TeleporterType.Frame) {
-            return FrameTeleportRegistry.register(this);
-        } else if(type == TeleporterType.Player) {
-            return PlayerTeleportRegistry.register(this);
-        }
-        return false;
-    }
-
-    private void unregister() {
-        if(type == TeleporterType.Frame) {
-            FrameTeleportRegistry.unregister(this);
-        } else if(type == TeleporterType.Player) {
-            PlayerTeleportRegistry.unregister(this);
-        }
-    }
-
-    private Pair<Pos, World> getDestination() {
-        if(type == TeleporterType.Frame) {
-            return FrameTeleportRegistry.getDestination(this);
-        } else if(type == TeleporterType.Player) {
-            return PlayerTeleportRegistry.getDestination(this);
-        } else  {
-            LogHelper.info("Error!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!6" + type);
-            return null;
-        }
     }
 
     @Override

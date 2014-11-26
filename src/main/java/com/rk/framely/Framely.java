@@ -7,7 +7,6 @@ import com.rk.framely.init.ModTileEntities;
 import com.rk.framely.network.PacketHandler;
 import com.rk.framely.proxy.IProxy;
 import com.rk.framely.reference.Reference;
-import com.rk.framely.util.LogHelper;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
@@ -18,7 +17,6 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStoppedEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.relauncher.Side;
-import net.minecraftforge.common.MinecraftForge;
 
 @Mod(modid= Reference.MOD_ID, name=Reference.MOD_NAME, version=Reference.VERSION, guiFactory = Reference.GUI_FACTORY_CLASS)
 public class Framely {
@@ -68,8 +66,7 @@ public class Framely {
     @Mod.EventHandler
     public void serverStopped(FMLServerStoppedEvent event) {
         if(FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER) {
-            PlayerTeleportRegistry.clear();
-            FrameTeleportRegistry.clear();
+            TeleportRegistry.clear();
         }
     }
 }
