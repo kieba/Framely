@@ -287,6 +287,10 @@ public class TileEntityFrameManager extends TileEntityFrameBase implements IPack
             MovableBlock mb = blockArrayList.get(i);
             Chunk c = mb.newWorld.getChunkFromBlockCoords(mb.newPos.x, mb.newPos.z);
             mb.newWorld.markAndNotifyBlock(mb.newPos.x, mb.newPos.y, mb.newPos.z, c, mb.oldBlock, mb.block, 3);
+            TileEntity newTile = world.getTileEntity(mb.newPos.x, mb.newPos.y, mb.newPos.z);
+            if(Framely.isFMPLoaded && isMultipart(mb.tileEntity)) {
+               MultipartHelper.sendDescPacket(mb.newWorld, newTile);
+            }
         }
 
         for (int i = 0; i < blockArrayList.size(); i++) {
@@ -334,10 +338,6 @@ public class TileEntityFrameManager extends TileEntityFrameBase implements IPack
             newTile.xCoord = mb.newPos.x;
             newTile.yCoord = mb.newPos.y;
             newTile.zCoord = mb.newPos.z;
-
-            //if(Framely.isFMPLoaded && isMultipart(mb.tileEntity)) {
-            //    MultipartHelper.sendDescPacket(mb.newWorld, newTile);
-            //}
         }
     }
 
