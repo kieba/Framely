@@ -1,9 +1,13 @@
 package com.rk.framely.tileentity;
 
+import com.rk.framely.util.LogHelper;
 import com.rk.framely.util.Pos;
+import net.minecraft.block.Block;
 import net.minecraft.client.stream.IngestServerTester;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
 
 public class TileEntityFrameBase extends TileEntityBase {
 
@@ -34,6 +38,22 @@ public class TileEntityFrameBase extends TileEntityBase {
         if(!relativeFrameManagerPos.equals(Pos.NULL))
             return (TileEntityFrameManager)worldObj.getTileEntity(relativeFrameManagerPos.x + xCoord,relativeFrameManagerPos.y + yCoord,relativeFrameManagerPos.z + zCoord);
         return null;
+    }
+
+    public void onNeighborBlockChange(World world, int x, int y, int z, Block block){
+        TileEntityFrameManager frameManager = getFrameManager();
+        if(frameManager==null) return;
+        for(ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
+            if(frameManager.isBlockInConstruction(x+dir.offsetX,y+dir.offsetY,z+dir.offsetZ)
+                    && world.isAirBlock(x+dir.offsetX,y+dir.offsetY,z+dir.offsetZ)
+                    && !frameManager.move
+                    && !world.isRemote){
+                LogHelper.info("Move: " + frameManager.move);
+                LogHelper.info("Block: " + x + " " + y + " " + z);
+                LogHelper.info("BlockProblem: " + (x+dir.offsetX) + " " + (y+dir.offsetY) + " " + (z+dir.offsetZ) + " " + block.getLocalizedName());
+                frameManager.onBlockRemovedFromConstruction();
+            }
+        }
     }
 
     public void onBlockRemoved(){

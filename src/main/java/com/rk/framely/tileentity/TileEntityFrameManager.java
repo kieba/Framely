@@ -42,11 +42,13 @@ public class TileEntityFrameManager extends TileEntityFrameBase implements IPack
             tick++;
             if(tick >= ANIMATION_TICKS) {
                 tick = 0;
-                move = false;
                 /* move the relativeConstruction (server side only) */
                 if(!worldObj.isRemote) {
+                    LogHelper.info("move");
                     move(worldObj, xCoord + direction.offsetX, yCoord + direction.offsetY, zCoord + direction.offsetZ);
+                    LogHelper.info("moveready: " + move);
                 }
+                move = false;
             }
         }
     }
@@ -98,6 +100,16 @@ public class TileEntityFrameManager extends TileEntityFrameBase implements IPack
             relativeConstruction.clear();
             worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
         }
+    }
+
+    public boolean isBlockInConstruction(int x, int y, int z){
+        Pos realtivePos = new Pos(x-xCoord, y-yCoord, z-zCoord);
+        for(Pos pos:relativeConstruction){
+            if(pos.equals(realtivePos)){
+                return true;
+            }
+        }
+        return false;
     }
 
     public void onBlockRemovedFromConstruction(){
@@ -276,6 +288,15 @@ public class TileEntityFrameManager extends TileEntityFrameBase implements IPack
             Chunk c = mb.newWorld.getChunkFromBlockCoords(mb.newPos.x, mb.newPos.z);
             mb.newWorld.markAndNotifyBlock(mb.newPos.x, mb.newPos.y, mb.newPos.z, c, mb.oldBlock, mb.block, 3);
         }
+
+        for (int i = 0; i < blockArrayList.size(); i++) {
+            MovableBlock mb = blockArrayList.get(i);
+            TileEntity te = world.getTileEntity(mb.newPos.x, mb.newPos.y, mb.newPos.z);
+            if(te instanceof TileEntityFrameBase) {
+                ((TileEntityFrameBase) te).registerFrameManager(new Pos(destX, destY, destZ));
+            }
+        }
+
     }
 
     private MovableBlock getBlock(Pos oldPos, Pos newPos, World newWorld) {
@@ -287,6 +308,9 @@ public class TileEntityFrameManager extends TileEntityFrameBase implements IPack
         mb.meta = worldObj.getBlockMetadata(oldPos.x, oldPos.y, oldPos.z);
         mb.tileEntity = worldObj.getTileEntity(oldPos.x, oldPos.y, oldPos.z);
         if(mb.tileEntity != null) {
+            if(mb.tileEntity instanceof TileEntityFrameBase) {
+                ((TileEntityFrameBase) mb.tileEntity).removeFrameManager();
+            }
             NBTTagCompound tag = new NBTTagCompound();
             mb.tileEntity.writeToNBT(tag);
             mb.tagCompound = tag;
@@ -311,9 +335,9 @@ public class TileEntityFrameManager extends TileEntityFrameBase implements IPack
             newTile.yCoord = mb.newPos.y;
             newTile.zCoord = mb.newPos.z;
 
-            if(Framely.isFMPLoaded && isMultipart(mb.tileEntity)) {
-                MultipartHelper.sendDescPacket(mb.newWorld, newTile);
-            }
+            //if(Framely.isFMPLoaded && isMultipart(mb.tileEntity)) {
+            //    MultipartHelper.sendDescPacket(mb.newWorld, newTile);
+            //}
         }
     }
 
