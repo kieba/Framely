@@ -79,10 +79,6 @@ public class TileEntityFrameManager extends TileEntityFrameBase implements IPack
         return AxisAlignedBB.getBoundingBox(minX, minY, minZ, maxX, maxY, maxZ);
     }
 
-    public void onBlockActivated() {
-        onConstructionChanged();
-    }
-
     private boolean isOwnFrameManager(){
         return relativeFrameManagerPos.equals(Pos.NULL);
     }

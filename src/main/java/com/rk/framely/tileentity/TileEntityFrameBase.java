@@ -35,8 +35,13 @@ public class TileEntityFrameBase extends TileEntityBase {
     }
 
     public TileEntityFrameManager getFrameManager(){
-        if(!relativeFrameManagerPos.equals(Pos.NULL))
-            return (TileEntityFrameManager)worldObj.getTileEntity(relativeFrameManagerPos.x + xCoord,relativeFrameManagerPos.y + yCoord,relativeFrameManagerPos.z + zCoord);
+        if(!relativeFrameManagerPos.equals(Pos.NULL)){
+            TileEntity tileEntity = worldObj.getTileEntity(relativeFrameManagerPos.x + xCoord,relativeFrameManagerPos.y + yCoord,relativeFrameManagerPos.z + zCoord);
+            if(tileEntity != null && tileEntity instanceof TileEntityFrameManager){
+                TileEntityFrameManager frameManager = (TileEntityFrameManager) tileEntity;
+                return frameManager;
+            }
+        }
         return null;
     }
 

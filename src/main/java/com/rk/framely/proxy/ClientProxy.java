@@ -9,7 +9,7 @@ import cpw.mods.fml.client.registry.RenderingRegistry;
 
 public class ClientProxy extends CommonProxy {
 
-    public static int renderIdFrameManager;
+
     private static WorldRendererFrameManager worldRendererFrameManager = new WorldRendererFrameManager();
 
     @Override

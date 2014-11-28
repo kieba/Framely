@@ -2,6 +2,7 @@ package com.rk.framely.block;
 
 import com.rk.framely.Framely;
 import com.rk.framely.proxy.ClientProxy;
+import com.rk.framely.proxy.CommonProxy;
 import com.rk.framely.reference.Reference;
 import com.rk.framely.tileentity.TileEntityEngine;
 import com.rk.framely.tileentity.TileEntityFrameBase;
@@ -77,7 +78,7 @@ public class BlockFrameManager extends BlockFrameBase implements ITileEntityProv
         for(ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
             TileEntity entity = world.getTileEntity(x + dir.offsetX, y + dir.offsetY, z + dir.offsetZ);
             if(entity instanceof TileEntityFrameBase){
-                if(!((TileEntityFrameBase) entity).relativeFrameManagerPos.equals(Pos.NULL)){
+                if(((TileEntityFrameBase) entity).getFrameManager()!=null){
                     return false;
                 }
             }
@@ -97,7 +98,7 @@ public class BlockFrameManager extends BlockFrameBase implements ITileEntityProv
 
     @Override
     public int getRenderType() {
-        return ClientProxy.renderIdFrameManager;
+        return CommonProxy.renderIdFrameManager;
     }
 
     @Override
