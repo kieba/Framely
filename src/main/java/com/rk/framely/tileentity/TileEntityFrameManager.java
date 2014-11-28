@@ -25,7 +25,7 @@ import java.util.List;
 
 public class TileEntityFrameManager extends TileEntityFrameBase implements IPacketReceiver, IEnergyHandler {
 
-    private static final int ENERGY_PER_BLOCK = 0;
+    private static final int ENERGY_PER_BLOCK = 160;
 
     public static int ANIMATION_TICKS = 20;
     public ForgeDirection direction;
@@ -33,7 +33,7 @@ public class TileEntityFrameManager extends TileEntityFrameBase implements IPack
     public boolean move = false;
     public boolean showConstructionGrid = false;
     public boolean sendAnimationStartMessage = false;
-    private EnergyStorage storage = new EnergyStorage(ENERGY_PER_BLOCK * 1024 + 1000, 10000, Integer.MAX_VALUE);
+    private EnergyStorage storage = new EnergyStorage(ENERGY_PER_BLOCK * 1024, 10000, Integer.MAX_VALUE);
 
     public List<Pos> relativeConstruction = new ArrayList<Pos>();
 
@@ -45,9 +45,7 @@ public class TileEntityFrameManager extends TileEntityFrameBase implements IPack
                 tick = 0;
                 /* move the relativeConstruction (server side only) */
                 if(!worldObj.isRemote) {
-                    LogHelper.info("move");
                     move(worldObj, xCoord + direction.offsetX, yCoord + direction.offsetY, zCoord + direction.offsetZ);
-                    LogHelper.info("moveready: " + move);
                 }
                 move = false;
             }
@@ -247,7 +245,7 @@ public class TileEntityFrameManager extends TileEntityFrameBase implements IPack
             Pos newPos = new Pos(destX + relPos.x, destY + relPos.y, destZ + relPos.z);
             MovableBlock mb = getBlock(oldPos, newPos, world);
             blockArrayList.add(mb);
-            worldObj.removeTileEntity(mb.oldPos.x, mb.oldPos.y, mb.oldPos.z);
+            //worldObj.removeTileEntity(mb.oldPos.x, mb.oldPos.y, mb.oldPos.z);
         }
 
         ArrayList<MovableBlock> airPosList = new ArrayList<MovableBlock>();
@@ -300,10 +298,20 @@ public class TileEntityFrameManager extends TileEntityFrameBase implements IPack
             MovableBlock mb = blockArrayList.get(i);
             Chunk c = mb.newWorld.getChunkFromBlockCoords(mb.newPos.x, mb.newPos.z);
             mb.newWorld.markAndNotifyBlock(mb.newPos.x, mb.newPos.y, mb.newPos.z, c, mb.oldBlock, mb.block, 3);
-            TileEntity newTile = world.getTileEntity(mb.newPos.x, mb.newPos.y, mb.newPos.z);
+            if(mb.tileEntity != null) {
+                mb.tileEntity.setWorldObj(mb.newWorld);
+                mb.tileEntity.xCoord = mb.newPos.x;
+                mb.tileEntity.yCoord = mb.newPos.y;
+                mb.tileEntity.zCoord = mb.newPos.z;
+                mb.newWorld.setTileEntity(mb.newPos.x, mb.newPos.y, mb.newPos.z, mb.tileEntity );
+            }
+
+
+            /*TileEntity newTile = world.getTileEntity(mb.newPos.x, mb.newPos.y, mb.newPos.z);
             if(Framely.isFMPLoaded && isMultipart(mb.tileEntity)) {
                MultipartHelper.sendDescPacket(mb.newWorld, newTile);
             }
+            */
         }
 
         for (int i = 0; i < airPosList.size(); i++) {

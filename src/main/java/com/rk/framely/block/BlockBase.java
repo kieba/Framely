@@ -14,6 +14,7 @@ public abstract class BlockBase extends Block {
     public BlockBase(Material m) {
         super(m);
         this.setCreativeTab(CreativeTabFramely.FRAMELY_TAB);
+        this.setHardness(0.5f);
     }
 
     @Override
