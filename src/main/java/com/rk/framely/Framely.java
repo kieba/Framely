@@ -6,6 +6,7 @@ import com.rk.framely.init.ModItems;
 import com.rk.framely.init.ModTileEntities;
 import com.rk.framely.network.PacketHandler;
 import com.rk.framely.proxy.IProxy;
+import com.rk.framely.recipes.Recipes;
 import com.rk.framely.reference.Reference;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Loader;
@@ -46,7 +47,6 @@ public class Framely {
         ModBlocks.init();
 
         ModItems.init();
-
     }
 
     @Mod.EventHandler
@@ -55,6 +55,7 @@ public class Framely {
         packetHandler = new PacketHandler();
         ModTileEntities.init();
         PROXY.init();
+        Recipes.init();
     }
 
     @Mod.EventHandler
