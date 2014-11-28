@@ -78,7 +78,7 @@ public class BlockFrameManager extends BlockFrameBase implements ITileEntityProv
         for(ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
             TileEntity entity = world.getTileEntity(x + dir.offsetX, y + dir.offsetY, z + dir.offsetZ);
             if(entity instanceof TileEntityFrameBase){
-                if(!((TileEntityFrameBase) entity).relativeFrameManagerPos.equals(Pos.NULL)){
+                if(((TileEntityFrameBase) entity).getFrameManager()!=null){
                     return false;
                 }
             }
