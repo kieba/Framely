@@ -19,12 +19,13 @@ import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.common.util.ForgeDirection;
 
+import javax.swing.plaf.basic.BasicInternalFrameTitlePane;
 import java.util.ArrayList;
 import java.util.List;
 
 public class TileEntityFrameManager extends TileEntityFrameBase implements IPacketReceiver, IEnergyHandler {
 
-    private static final int ENERGY_PER_BLOCK = 160;
+    private static final int ENERGY_PER_BLOCK = 0;
 
     public static int ANIMATION_TICKS = 20;
     public ForgeDirection direction;
@@ -32,7 +33,7 @@ public class TileEntityFrameManager extends TileEntityFrameBase implements IPack
     public boolean move = false;
     public boolean showConstructionGrid = false;
     public boolean sendAnimationStartMessage = false;
-    private EnergyStorage storage = new EnergyStorage(ENERGY_PER_BLOCK * 1024, 10000, Integer.MAX_VALUE);
+    private EnergyStorage storage = new EnergyStorage(ENERGY_PER_BLOCK * 1024 + 1000, 10000, Integer.MAX_VALUE);
 
     public List<Pos> relativeConstruction = new ArrayList<Pos>();
 
@@ -249,24 +250,31 @@ public class TileEntityFrameManager extends TileEntityFrameBase implements IPack
             worldObj.removeTileEntity(mb.oldPos.x, mb.oldPos.y, mb.oldPos.z);
         }
 
+        ArrayList<MovableBlock> airPosList = new ArrayList<MovableBlock>();
+
         /* add air blocks to the position where no new block will be added, only the old block removed */
         int size = blockArrayList.size();
         for (int i = 0; i < size; i++) {
             boolean addAirBlock = true;
-            Pos oldPos = blockArrayList.get(i).oldPos;
+            MovableBlock mb = blockArrayList.get(i);
+            Pos oldPos = mb.oldPos;
+            worldObj.setBlock(oldPos.x, oldPos.y, oldPos.z, Blocks.air, 0, 0);
 
             if(world == worldObj) {
                 if(oldPos == null) continue;
+                boolean add = true;
                 for (int j = 0; j < blockArrayList.size(); j++) {
                     Pos newPos = blockArrayList.get(j).newPos;
                     if(oldPos.equals(newPos)) {
-                        addAirBlock = false;
+                        add = false;
                         break;
                     }
                 }
+                if(add) airPosList.add(mb);
             }
 
-            if(addAirBlock) {
+
+            /*if(addAirBlock) {
                 MovableBlock mb = new MovableBlock();
                 mb.newPos = oldPos;
                 mb.block = Blocks.air;
@@ -274,10 +282,15 @@ public class TileEntityFrameManager extends TileEntityFrameBase implements IPack
                 mb.meta = 0;
                 mb.newWorld = worldObj;
                 blockArrayList.add(mb);
-            }
+            }*/
         }
 
         /* place new blocks */
+        for (int i = 0; i < blockArrayList.size(); i++) {
+            placeBlock(blockArrayList.get(i));
+        }
+
+        /* place new blocks (this time we place blocks that couldn't be placed in the first loop, like RedstoneTorches */
         for (int i = 0; i < blockArrayList.size(); i++) {
             placeBlock(blockArrayList.get(i));
         }
@@ -291,6 +304,12 @@ public class TileEntityFrameManager extends TileEntityFrameBase implements IPack
             if(Framely.isFMPLoaded && isMultipart(mb.tileEntity)) {
                MultipartHelper.sendDescPacket(mb.newWorld, newTile);
             }
+        }
+
+        for (int i = 0; i < airPosList.size(); i++) {
+            MovableBlock mb = airPosList.get(i);
+            Chunk c = worldObj.getChunkFromBlockCoords(mb.oldPos.x, mb.oldPos.z);
+            worldObj.markAndNotifyBlock(mb.oldPos.x, mb.oldPos.y, mb.oldPos.z, c, mb.block, Blocks.air, 3);
         }
 
         for (int i = 0; i < blockArrayList.size(); i++) {
@@ -320,24 +339,31 @@ public class TileEntityFrameManager extends TileEntityFrameBase implements IPack
             mb.tagCompound = tag;
         }
         mb.newWorld = newWorld;
+        mb.placed = false;
         return mb;
     }
 
     private void placeBlock(MovableBlock mb) {
-        mb.newWorld.setBlock(mb.newPos.x, mb.newPos.y, mb.newPos.z, mb.block, mb.meta, 0);
-        mb.newWorld.setBlockMetadataWithNotify(mb.newPos.x, mb.newPos.y, mb.newPos.z, mb.meta, 0);
+        if(!mb.placed) {
+            if(mb.block.canPlaceBlockAt(mb.newWorld, mb.newPos.x, mb.newPos.y, mb.newPos.z)) {
+                mb.newWorld.setBlock(mb.newPos.x, mb.newPos.y, mb.newPos.z, mb.block, mb.meta, 0);
+                mb.newWorld.setBlockMetadataWithNotify(mb.newPos.x, mb.newPos.y, mb.newPos.z, mb.meta, 0);
 
-        if (mb.tileEntity != null) {
-            TileEntity newTile = TileEntity.createAndLoadEntity(mb.tagCompound);
+                if (mb.tileEntity != null) {
+                    TileEntity newTile = TileEntity.createAndLoadEntity(mb.tagCompound);
 
-            if(Framely.isFMPLoaded && isMultipart(mb.tileEntity)) {
-                newTile = MultipartHelper.createTileFromNBT(mb.newWorld, mb.tagCompound);
+                    if(Framely.isFMPLoaded && isMultipart(mb.tileEntity)) {
+                        newTile = MultipartHelper.createTileFromNBT(mb.newWorld, mb.tagCompound);
+                    }
+
+                    mb.newWorld.setTileEntity(mb.newPos.x, mb.newPos.y, mb.newPos.z, newTile);
+                    newTile.xCoord = mb.newPos.x;
+                    newTile.yCoord = mb.newPos.y;
+                    newTile.zCoord = mb.newPos.z;
+                }
+
+                mb.placed = true;
             }
-
-            mb.newWorld.setTileEntity(mb.newPos.x, mb.newPos.y, mb.newPos.z, newTile);
-            newTile.xCoord = mb.newPos.x;
-            newTile.yCoord = mb.newPos.y;
-            newTile.zCoord = mb.newPos.z;
         }
     }
 
@@ -403,6 +429,7 @@ public class TileEntityFrameManager extends TileEntityFrameBase implements IPack
         private NBTTagCompound tagCompound;
         private int meta;
         private World newWorld;
+        private boolean placed;
     }
 
 
