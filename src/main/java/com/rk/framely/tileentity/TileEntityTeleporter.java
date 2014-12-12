@@ -3,6 +3,7 @@ package com.rk.framely.tileentity;
 import cofh.api.energy.EnergyStorage;
 import cofh.api.energy.IEnergyHandler;
 import com.rk.framely.handler.TeleportRegistry;
+import com.rk.framely.util.LogHelper;
 import com.rk.framely.util.Pair;
 import com.rk.framely.util.Pos;
 import net.minecraft.entity.player.EntityPlayer;
@@ -21,7 +22,7 @@ public class TileEntityTeleporter extends TileEntityBase implements IEnergyHandl
         Unknown
     }
 
-    private static final int ENERGY_PER_TELEPORT = 100000;
+    private static final int ENERGY_PER_TELEPORT = 0; //100000;
     private static final int ENERGY_PER_BLOCK = 3200;
     private TeleporterType type;
     private UUID uuid = UUID.randomUUID();

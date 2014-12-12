@@ -14,9 +14,9 @@ public class ModBlocks {
     public static final BlockTeleporter teleporter = new BlockTeleporter();
 
     public static void init() {
-        GameRegistry.registerBlock(frame, Reference.BLOCK_FRAME_NAME);
-        GameRegistry.registerBlock(engine, Reference.BLOCK_ENGINE_NAME);
-        GameRegistry.registerBlock(frameManager, Reference.BLOCK_FRAME_MANAGER_NAME);
+        //GameRegistry.registerBlock(frame, Reference.BLOCK_FRAME_NAME);
+        //GameRegistry.registerBlock(engine, Reference.BLOCK_ENGINE_NAME);
+        //GameRegistry.registerBlock(frameManager, Reference.BLOCK_FRAME_MANAGER_NAME);
         GameRegistry.registerBlock(teleporter, ItemBlockTeleporter.class, Reference.BLOCK_TELEPORTER_NAME);
     }
 }
