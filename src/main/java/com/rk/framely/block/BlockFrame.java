@@ -1,14 +1,10 @@
 package com.rk.framely.block;
 
-import com.rk.framely.init.ModBlocks;
 import com.rk.framely.reference.Reference;
-import com.rk.framely.tileentity.TileEntityEngine;
 import com.rk.framely.tileentity.TileEntityFrame;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockColored;
-import net.minecraft.block.BlockGlass;
 import net.minecraft.block.ITileEntityProvider;
-import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;

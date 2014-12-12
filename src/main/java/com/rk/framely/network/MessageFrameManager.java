@@ -1,8 +1,6 @@
 package com.rk.framely.network;
 
-import com.rk.framely.tileentity.TileEntityEngine;
 import com.rk.framely.tileentity.TileEntityFrameManager;
-import com.rk.framely.util.LogHelper;
 import com.rk.framely.util.Pos;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;

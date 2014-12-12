@@ -6,8 +6,10 @@ import cofh.api.energy.EnergyStorage;
 import cofh.api.energy.IEnergyHandler;
 import com.rk.framely.Framely;
 import com.rk.framely.block.BlockFrameBase;
-import com.rk.framely.network.*;
-import com.rk.framely.util.LogHelper;
+import com.rk.framely.network.IPacketReceiver;
+import com.rk.framely.network.MessageFrameManager;
+import com.rk.framely.network.PacketHandler;
+import com.rk.framely.network.PacketTileSimpleAction;
 import com.rk.framely.util.Pos;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
@@ -19,7 +21,6 @@ import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import javax.swing.plaf.basic.BasicInternalFrameTitlePane;
 import java.util.ArrayList;
 import java.util.List;
 

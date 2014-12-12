@@ -11,8 +11,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import javax.swing.text.html.parser.Entity;
-
 public class BlockHelper {
 
     public static boolean moveBlock(World world, int srcX, int srcY, int srcZ, ForgeDirection dir) {

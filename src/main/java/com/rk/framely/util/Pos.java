@@ -1,7 +1,5 @@
 package com.rk.framely.util;
 
-import java.util.zip.ZipEntry;
-
 public class Pos {
 
     public static final Pos NULL = new Pos(0,0,0);

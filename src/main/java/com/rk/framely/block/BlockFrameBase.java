@@ -1,10 +1,8 @@
 package com.rk.framely.block;
 
 import com.rk.framely.tileentity.TileEntityFrameBase;
-import com.rk.framely.util.CreativeTabFramely;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 public abstract class BlockFrameBase extends BlockBase {

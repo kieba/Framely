@@ -1,6 +1,8 @@
 package com.rk.framely;
 
-import com.rk.framely.handler.*;
+import com.rk.framely.handler.ConfigurationHandler;
+import com.rk.framely.handler.GuiHandler;
+import com.rk.framely.handler.TeleportRegistry;
 import com.rk.framely.init.ModBlocks;
 import com.rk.framely.init.ModItems;
 import com.rk.framely.init.ModTileEntities;
@@ -16,7 +18,6 @@ import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStoppedEvent;
-import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.relauncher.Side;
 
 @Mod(modid= Reference.MOD_ID, name=Reference.MOD_NAME, version=Reference.VERSION, guiFactory = Reference.GUI_FACTORY_CLASS)
@@ -51,7 +52,7 @@ public class Framely {
 
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) {
-        NetworkRegistry.INSTANCE.registerGuiHandler(INSTANCE, new GuiHandler());
+        //NetworkRegistry.INSTANCE.registerGuiHandler(INSTANCE, new GuiHandler());
         packetHandler = new PacketHandler();
         ModTileEntities.init();
         PROXY.init();

@@ -1,16 +1,8 @@
 package com.rk.framely.client.renderer;
 
 import com.rk.framely.tileentity.TileEntityFrameManager;
-import com.rk.framely.util.LogHelper;
-import com.rk.framely.util.Pos;
-import cpw.mods.fml.client.FMLClientHandler;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class TileEntityFrameManagerRenderer extends TileEntitySpecialRenderer {
 

@@ -3,7 +3,6 @@ package com.rk.framely.tileentity;
 import com.rk.framely.util.LogHelper;
 import com.rk.framely.util.Pos;
 import net.minecraft.block.Block;
-import net.minecraft.client.stream.IngestServerTester;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;

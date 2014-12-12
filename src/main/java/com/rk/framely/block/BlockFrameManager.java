@@ -1,16 +1,10 @@
 package com.rk.framely.block;
 
 import com.rk.framely.Framely;
-import com.rk.framely.proxy.ClientProxy;
 import com.rk.framely.proxy.CommonProxy;
 import com.rk.framely.reference.Reference;
-import com.rk.framely.tileentity.TileEntityEngine;
 import com.rk.framely.tileentity.TileEntityFrameBase;
 import com.rk.framely.tileentity.TileEntityFrameManager;
-import com.rk.framely.util.LogHelper;
-import com.rk.framely.util.Pos;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.ITileEntityProvider;
@@ -20,11 +14,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
-import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
-
-import java.sql.Ref;
 
 public class BlockFrameManager extends BlockFrameBase implements ITileEntityProvider {
 

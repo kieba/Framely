@@ -3,7 +3,6 @@ package com.rk.framely.tileentity;
 import cofh.api.energy.EnergyStorage;
 import cofh.api.energy.IEnergyHandler;
 import com.rk.framely.handler.TeleportRegistry;
-import com.rk.framely.util.LogHelper;
 import com.rk.framely.util.Pair;
 import com.rk.framely.util.Pos;
 import net.minecraft.entity.player.EntityPlayer;

@@ -1,11 +1,8 @@
 package com.rk.framely.block;
 
 import com.rk.framely.init.ModItems;
-import com.rk.framely.item.ItemLinker;
 import com.rk.framely.reference.Reference;
-import com.rk.framely.tileentity.TileEntityEngine;
 import com.rk.framely.tileentity.TileEntityTeleporter;
-import com.rk.framely.util.LogHelper;
 import com.rk.framely.util.Pos;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -23,8 +20,6 @@ import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
-import sun.rmi.runtime.Log;
 
 import java.util.List;
 import java.util.UUID;

@@ -2,24 +2,14 @@ package com.rk.framely.client.renderer;
 
 import com.rk.framely.block.BlockFrameManager;
 import com.rk.framely.proxy.ClientProxy;
-import com.rk.framely.proxy.CommonProxy;
-import com.rk.framely.tileentity.TileEntityEngine;
 import com.rk.framely.tileentity.TileEntityFrameManager;
-import com.rk.framely.util.LogHelper;
-import com.rk.framely.util.Pos;
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 import net.minecraft.block.Block;
-import net.minecraft.client.model.PositionTextureVertex;
-import net.minecraft.client.model.TexturedQuad;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.IBlockAccess;
-import net.minecraftforge.common.util.ForgeDirection;
 import org.lwjgl.opengl.GL11;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class WorldRendererFrameManager implements ISimpleBlockRenderingHandler {
 

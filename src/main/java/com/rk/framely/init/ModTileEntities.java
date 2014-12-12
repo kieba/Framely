@@ -1,7 +1,7 @@
 package com.rk.framely.init;
 
 import com.rk.framely.reference.Reference;
-import com.rk.framely.tileentity.*;
+import com.rk.framely.tileentity.TileEntityTeleporter;
 import cpw.mods.fml.common.registry.GameRegistry;
 
 public class ModTileEntities {

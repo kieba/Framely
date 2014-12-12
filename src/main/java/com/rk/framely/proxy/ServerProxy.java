@@ -1,8 +1,5 @@
 package com.rk.framely.proxy;
 
-import cpw.mods.fml.common.FMLCommonHandler;
-import net.minecraftforge.common.MinecraftForge;
-
 public class ServerProxy extends CommonProxy {
 
     @Override

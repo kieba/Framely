@@ -3,7 +3,6 @@ package com.rk.framely.init;
 import com.rk.framely.item.ItemLinker;
 import com.rk.framely.reference.Reference;
 import cpw.mods.fml.common.registry.GameRegistry;
-import net.minecraft.world.WorldSettings;
 
 @GameRegistry.ObjectHolder(Reference.MOD_ID)
 public class ModItems {

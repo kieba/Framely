@@ -2,7 +2,6 @@ package com.rk.framely.block;
 
 import com.rk.framely.reference.Reference;
 import com.rk.framely.tileentity.TileEntityEngine;
-import com.rk.framely.util.LogHelper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;

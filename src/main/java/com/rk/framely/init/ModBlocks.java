@@ -1,6 +1,9 @@
 package com.rk.framely.init;
 
-import com.rk.framely.block.*;
+import com.rk.framely.block.BlockEngine;
+import com.rk.framely.block.BlockFrame;
+import com.rk.framely.block.BlockFrameManager;
+import com.rk.framely.block.BlockTeleporter;
 import com.rk.framely.item.ItemBlockTeleporter;
 import com.rk.framely.reference.Reference;
 import cpw.mods.fml.common.registry.GameRegistry;

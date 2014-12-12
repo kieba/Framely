@@ -5,7 +5,6 @@ import com.rk.framely.block.BlockFrameManager;
 import com.rk.framely.util.Pos;
 import cpw.mods.fml.client.FMLClientHandler;
 import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraft.util.IIcon;
 import net.minecraftforge.common.util.ForgeDirection;
 import org.lwjgl.opengl.GL11;
 

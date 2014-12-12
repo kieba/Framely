@@ -2,7 +2,6 @@ package com.rk.framely.tileentity;
 
 import com.rk.framely.network.MessageEngine;
 import com.rk.framely.network.PacketHandler;
-import com.rk.framely.util.ConstructionHelper;
 import com.rk.framely.util.Pos;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.Packet;

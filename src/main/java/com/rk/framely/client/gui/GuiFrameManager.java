@@ -1,19 +1,15 @@
 package com.rk.framely.client.gui;
 
 import com.rk.framely.Framely;
-import com.rk.framely.network.PacketHandler;
 import com.rk.framely.network.PacketTileSimpleAction;
 import com.rk.framely.reference.Reference;
 import com.rk.framely.reference.Textures;
 import com.rk.framely.tileentity.TileEntityFrameManager;
-import com.sun.xml.internal.ws.client.dispatch.PacketDispatch;
-import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
-import net.minecraft.inventory.InventoryBasic;
 import org.lwjgl.opengl.GL11;
 
 import java.util.Random;
